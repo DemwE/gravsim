@@ -43,6 +43,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
 # Devenv
 .devenv*
 devenv.local.nix
