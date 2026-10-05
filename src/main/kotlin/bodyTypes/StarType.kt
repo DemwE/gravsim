@@ -14,6 +14,7 @@ enum class StarType(
     val isFuelScoopable: Boolean,
     val weight: Float,
 ) {
+    // types are based on: https://elite-dangerous.fandom.com/wiki/Stars
     // MAIN SEQUENCE STARS (~82% of all stars when considering Brown Dwarfs)
 
     // Very Common (~46% of Main Sequence)

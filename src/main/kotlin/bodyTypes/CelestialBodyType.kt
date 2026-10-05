@@ -12,6 +12,7 @@ enum class CelestialBodyType(
     val atmosphere: List<AtmosphereType>,
     val weight: Float,
 ) {
+    // Planets types are based on: https://elite-dangerous.fandom.com/wiki/Planets
     // TERRESTRIAL PLANETS
 
     // Very Common (~30% all planet spawns)

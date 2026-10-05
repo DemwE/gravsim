@@ -4,6 +4,8 @@ enum class AtmosphereType(
     val displayName: String,
     val weight: Float,
 ) {
+    // Atmosphere types are based on: https://elite-dangerous.fandom.com/wiki/Atmosphere
+
     // SUPER RARE (~0.05% - 0.2% chance)
     SILICATE_VAPOUR("Silicate Vapour", 0.05f),
 
