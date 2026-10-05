@@ -11,7 +11,6 @@ enum class StarType(
     val massRange: Range<SolarMass>,
     val radiusRange: Range<Kilometer>,
     val temperatureRange: Range<Kelvin>,
-    val isFuelScoopable: Boolean,
     val weight: Float,
 ) {
     // types are based on: https://elite-dangerous.fandom.com/wiki/Stars
@@ -23,7 +22,6 @@ enum class StarType(
         massRange = Range(unit(0.08, SolarMass), unit(0.45, SolarMass)),
         radiusRange = Range(unit(100000.0, Kilometer), unit(500000.0, Kilometer)),
         temperatureRange = Range(unit(2400.0, Kelvin), unit(3700.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 39.1f
     ),
 
@@ -33,7 +31,6 @@ enum class StarType(
         massRange = Range(unit(0.45, SolarMass), unit(0.8, SolarMass)),
         radiusRange = Range(unit(500000.0, Kilometer), unit(700000.0, Kilometer)),
         temperatureRange = Range(unit(3700.0, Kelvin), unit(5200.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 21.25f
     ),
 
@@ -43,7 +40,6 @@ enum class StarType(
         massRange = Range(unit(1.0, SolarMass), unit(1.4, SolarMass)),
         radiusRange = Range(unit(800000.0, Kilometer), unit(1000000.0, Kilometer)),
         temperatureRange = Range(unit(6000.0, Kelvin), unit(7600.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 10.2f
     ),
 
@@ -53,7 +49,6 @@ enum class StarType(
         massRange = Range(unit(0.8, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(700000.0, Kilometer), unit(850000.0, Kilometer)),
         temperatureRange = Range(unit(5200.0, Kelvin), unit(6000.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 7.65f
     ),
 
@@ -63,7 +58,6 @@ enum class StarType(
         massRange = Range(unit(1.4, SolarMass), unit(2.1, SolarMass)),
         radiusRange = Range(unit(1000000.0, Kilometer), unit(1500000.0, Kilometer)),
         temperatureRange = Range(unit(7600.0, Kelvin), unit(10000.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 5.1f
     ),
 
@@ -73,7 +67,6 @@ enum class StarType(
         massRange = Range(unit(2.0, SolarMass), unit(16.0, SolarMass)),
         radiusRange = Range(unit(1500000.0, Kilometer), unit(5000000.0, Kilometer)),
         temperatureRange = Range(unit(10000.0, Kelvin), unit(30000.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 1.445f
     ),
 
@@ -83,7 +76,6 @@ enum class StarType(
         massRange = Range(unit(15.0, SolarMass), unit(90.0, SolarMass)),
         radiusRange = Range(unit(4000000.0, Kilometer), unit(10000000.0, Kilometer)),
         temperatureRange = Range(unit(30000.0, Kelvin), unit(52000.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 0.17f
     ),
 
@@ -95,7 +87,6 @@ enum class StarType(
         massRange = Range(unit(0.05, SolarMass), unit(0.08, SolarMass)),
         radiusRange = Range(unit(70000.0, Kilometer), unit(120000.0, Kilometer)),
         temperatureRange = Range(unit(1300.0, Kelvin), unit(2400.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 8.7f
     ),
 
@@ -105,7 +96,6 @@ enum class StarType(
         massRange = Range(unit(0.02, SolarMass), unit(0.06, SolarMass)),
         radiusRange = Range(unit(60000.0, Kilometer), unit(100000.0, Kilometer)),
         temperatureRange = Range(unit(700.0, Kelvin), unit(1300.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 4.05f
     ),
 
@@ -115,7 +105,6 @@ enum class StarType(
         massRange = Range(unit(0.005, SolarMass), unit(0.03, SolarMass)),
         radiusRange = Range(unit(30000.0, Kilometer), unit(80000.0, Kilometer)),
         temperatureRange = Range(unit(300.0, Kelvin), unit(700.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 2.25f
     ),
 
@@ -127,7 +116,6 @@ enum class StarType(
         massRange = Range(unit(0.4, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(4000.0, Kilometer), unit(12000.0, Kilometer)),
         temperatureRange = Range(unit(4000.0, Kelvin), unit(10000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.1584f
     ),
 
@@ -137,7 +125,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.3, SolarMass)),
         radiusRange = Range(unit(5000.0, Kilometer), unit(15000.0, Kilometer)),
         temperatureRange = Range(unit(8000.0, Kelvin), unit(40000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.1044f
     ),
 
@@ -147,7 +134,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(5000.0, Kilometer), unit(14000.0, Kilometer)),
         temperatureRange = Range(unit(10000.0, Kelvin), unit(30000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0432f
     ),
 
@@ -157,7 +143,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(5000.0, Kilometer), unit(13000.0, Kilometer)),
         temperatureRange = Range(unit(12000.0, Kelvin), unit(30000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.01836f
     ),
 
@@ -167,7 +152,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.1, SolarMass)),
         radiusRange = Range(unit(4000.0, Kilometer), unit(11000.0, Kilometer)),
         temperatureRange = Range(unit(4000.0, Kelvin), unit(12000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.01368f
     ),
 
@@ -177,7 +161,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(5000.0, Kilometer), unit(12000.0, Kilometer)),
         temperatureRange = Range(unit(10000.0, Kelvin), unit(13000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.01152f
     ),
 
@@ -187,7 +170,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(5000.0, Kilometer), unit(12000.0, Kilometer)),
         temperatureRange = Range(unit(22000.0, Kelvin), unit(29000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0036f
     ),
 
@@ -197,7 +179,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.3, SolarMass)),
         radiusRange = Range(unit(4000.0, Kilometer), unit(15000.0, Kilometer)),
         temperatureRange = Range(unit(8000.0, Kelvin), unit(40000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.00324f
     ),
 
@@ -207,7 +188,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(5000.0, Kilometer), unit(12000.0, Kilometer)),
         temperatureRange = Range(unit(7000.0, Kelvin), unit(20000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.001548f
     ),
 
@@ -217,7 +197,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(5000.0, Kilometer), unit(12000.0, Kilometer)),
         temperatureRange = Range(unit(10000.0, Kelvin), unit(25000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.000396f
     ),
 
@@ -227,7 +206,6 @@ enum class StarType(
         massRange = Range(unit(0.5, SolarMass), unit(1.2, SolarMass)),
         radiusRange = Range(unit(5000.0, Kilometer), unit(12000.0, Kilometer)),
         temperatureRange = Range(unit(6000.0, Kelvin), unit(10000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.000072f
     ),
 
@@ -238,7 +216,6 @@ enum class StarType(
         massRange = Range(unit(0.1, SolarMass), unit(2.5, SolarMass)),
         radiusRange = Range(unit(700000.0, Kilometer), unit(3000000.0, Kilometer)),
         temperatureRange = Range(unit(3000.0, Kelvin), unit(7000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 2.304f
     ),
 
@@ -247,7 +224,6 @@ enum class StarType(
         massRange = Range(unit(2.0, SolarMass), unit(8.0, SolarMass)),
         radiusRange = Range(unit(1500000.0, Kilometer), unit(5000000.0, Kilometer)),
         temperatureRange = Range(unit(8000.0, Kelvin), unit(30000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.096f
     ),
 
@@ -258,7 +234,6 @@ enum class StarType(
         massRange = Range(unit(0.3, SolarMass), unit(8.0, SolarMass)),
         radiusRange = Range(unit(10000000.0, Kilometer), unit(100000000.0, Kilometer)),
         temperatureRange = Range(unit(2500.0, Kelvin), unit(3500.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 0.16f
     ),
 
@@ -267,7 +242,6 @@ enum class StarType(
         massRange = Range(unit(0.8, SolarMass), unit(5.0, SolarMass)),
         radiusRange = Range(unit(5000000.0, Kilometer), unit(30000000.0, Kilometer)),
         temperatureRange = Range(unit(3700.0, Kelvin), unit(5000.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 0.05f
     ),
 
@@ -276,7 +250,6 @@ enum class StarType(
         massRange = Range(unit(10.0, SolarMass), unit(30.0, SolarMass)),
         radiusRange = Range(unit(20000000.0, Kilometer), unit(100000000.0, Kilometer)),
         temperatureRange = Range(unit(7500.0, Kelvin), unit(10000.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 0.023f
     ),
 
@@ -285,7 +258,6 @@ enum class StarType(
         massRange = Range(unit(10.0, SolarMass), unit(25.0, SolarMass)),
         radiusRange = Range(unit(30000000.0, Kilometer), unit(150000000.0, Kilometer)),
         temperatureRange = Range(unit(6000.0, Kelvin), unit(7500.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 0.00525f
     ),
 
@@ -294,7 +266,6 @@ enum class StarType(
         massRange = Range(unit(10.0, SolarMass), unit(20.0, SolarMass)),
         radiusRange = Range(unit(40000000.0, Kilometer), unit(200000000.0, Kilometer)),
         temperatureRange = Range(unit(5000.0, Kelvin), unit(6000.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 0.004f
     ),
 
@@ -303,7 +274,6 @@ enum class StarType(
         massRange = Range(unit(10.0, SolarMass), unit(40.0, SolarMass)),
         radiusRange = Range(unit(100000000.0, Kilometer), unit(1000000000.0, Kilometer)),
         temperatureRange = Range(unit(3500.0, Kelvin), unit(4500.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 0.0035f
     ),
 
@@ -312,7 +282,6 @@ enum class StarType(
         massRange = Range(unit(15.0, SolarMass), unit(50.0, SolarMass)),
         radiusRange = Range(unit(15000000.0, Kilometer), unit(80000000.0, Kilometer)),
         temperatureRange = Range(unit(10000.0, Kelvin), unit(30000.0, Kelvin)),
-        isFuelScoopable = true,
         weight = 0.00175f
     ),
 
@@ -323,7 +292,6 @@ enum class StarType(
         massRange = Range(unit(0.8, SolarMass), unit(4.0, SolarMass)),
         radiusRange = Range(unit(5000000.0, Kilometer), unit(50000000.0, Kilometer)),
         temperatureRange = Range(unit(2300.0, Kelvin), unit(3500.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0296f
     ),
 
@@ -332,7 +300,6 @@ enum class StarType(
         massRange = Range(unit(0.8, SolarMass), unit(4.0, SolarMass)),
         radiusRange = Range(unit(5000000.0, Kilometer), unit(50000000.0, Kilometer)),
         temperatureRange = Range(unit(2300.0, Kelvin), unit(3500.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0288f
     ),
 
@@ -341,7 +308,6 @@ enum class StarType(
         massRange = Range(unit(1.0, SolarMass), unit(3.0, SolarMass)),
         radiusRange = Range(unit(10000000.0, Kilometer), unit(70000000.0, Kilometer)),
         temperatureRange = Range(unit(2500.0, Kelvin), unit(3200.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0192f
     ),
 
@@ -350,7 +316,6 @@ enum class StarType(
         massRange = Range(unit(1.0, SolarMass), unit(3.0, SolarMass)),
         radiusRange = Range(unit(10000000.0, Kilometer), unit(70000000.0, Kilometer)),
         temperatureRange = Range(unit(2500.0, Kelvin), unit(3200.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0024f
     ),
 
@@ -359,7 +324,6 @@ enum class StarType(
         massRange = Range(unit(1.0, SolarMass), unit(5.0, SolarMass)),
         radiusRange = Range(unit(10000000.0, Kilometer), unit(80000000.0, Kilometer)),
         temperatureRange = Range(unit(2000.0, Kelvin), unit(4300.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.00056f
     ),
 
@@ -368,7 +332,6 @@ enum class StarType(
         massRange = Range(unit(0.8, SolarMass), unit(2.0, SolarMass)),
         radiusRange = Range(unit(5000000.0, Kilometer), unit(40000000.0, Kilometer)),
         temperatureRange = Range(unit(3000.0, Kelvin), unit(4300.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.00024f
     ),
 
@@ -377,7 +340,6 @@ enum class StarType(
         massRange = Range(unit(0.8, SolarMass), unit(2.0, SolarMass)),
         radiusRange = Range(unit(5000000.0, Kilometer), unit(40000000.0, Kilometer)),
         temperatureRange = Range(unit(3000.0, Kelvin), unit(4300.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.00016f
     ),
 
@@ -386,7 +348,6 @@ enum class StarType(
         massRange = Range(unit(1.0, SolarMass), unit(4.0, SolarMass)),
         radiusRange = Range(unit(10000000.0, Kilometer), unit(60000000.0, Kilometer)),
         temperatureRange = Range(unit(2300.0, Kelvin), unit(3800.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0001f
     ),
 
@@ -397,7 +358,6 @@ enum class StarType(
         massRange = Range(unit(10.0, SolarMass), unit(60.0, SolarMass)),
         radiusRange = Range(unit(500000.0, Kilometer), unit(10000000.0, Kilometer)),
         temperatureRange = Range(unit(60000.0, Kelvin), unit(200000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0235f
     ),
 
@@ -406,7 +366,6 @@ enum class StarType(
         massRange = Range(unit(10.0, SolarMass), unit(50.0, SolarMass)),
         radiusRange = Range(unit(500000.0, Kilometer), unit(10000000.0, Kilometer)),
         temperatureRange = Range(unit(50000.0, Kelvin), unit(150000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0105f
     ),
 
@@ -415,7 +374,6 @@ enum class StarType(
         massRange = Range(unit(15.0, SolarMass), unit(55.0, SolarMass)),
         radiusRange = Range(unit(500000.0, Kilometer), unit(10000000.0, Kilometer)),
         temperatureRange = Range(unit(50000.0, Kelvin), unit(160000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.008f
     ),
 
@@ -424,7 +382,6 @@ enum class StarType(
         massRange = Range(unit(10.0, SolarMass), unit(50.0, SolarMass)),
         radiusRange = Range(unit(500000.0, Kilometer), unit(10000000.0, Kilometer)),
         temperatureRange = Range(unit(30000.0, Kelvin), unit(140000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.0075f
     ),
 
@@ -433,7 +390,6 @@ enum class StarType(
         massRange = Range(unit(20.0, SolarMass), unit(80.0, SolarMass)),
         radiusRange = Range(unit(500000.0, Kilometer), unit(10000000.0, Kilometer)),
         temperatureRange = Range(unit(30000.0, Kelvin), unit(200000.0, Kelvin)),
-        isFuelScoopable = false,
         weight = 0.00022f
     );
 }
