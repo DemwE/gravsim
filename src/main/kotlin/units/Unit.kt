@@ -1,13 +1,18 @@
 package units
 
-interface Unit<T: Unit<T>> {
+interface Unit<T : Unit<T>> {
     val name: String
     val symbol: String
-    var value: Double
+    val factorToSI: Double
 
-    fun toBaseValue(value: Number): Double = value.toDouble()
+    fun toSI(value: Double): Double = value * factorToSI
+    fun fromSI(value: Double): Double = value / factorToSI
+}
 
-    fun format(precision: Int = 5, value: Double = this.value): String {
-        return "%.${precision}f %s".format(value, symbol)
-    }
+fun <T : Unit<T>> unit(value: Number, unit: T): Quantity<T> {
+    return Quantity(value.toDouble(), unit)
+}
+
+internal fun formatWithUnit(value: Double, symbol: String, precision: Int): String {
+    return "%.${precision}f %s".format(value, symbol)
 }

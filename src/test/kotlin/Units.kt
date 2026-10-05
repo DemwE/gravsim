@@ -5,34 +5,30 @@ import units.*
 class UnitsTest {
 
     @Test
-    fun au() {
-        val AU = AstronomicalUnit(8.1291281)
-        println(AU.name)
-        println(AU.format())
-        println("AU to km: " + AU.toKiloMeters().format())
+    fun distance() {
+        val distance = unit(2.0, AstronomicalUnit)
+        println(distance.format())
+        println(distance.convertTo(Kilometer).format())
     }
 
     @Test
-    fun em() {
-        val EM = EarthMass(2.2)
-        println(EM.name)
-        println(EM.format())
-        println("EM to SM: " + EM.toSunMass().format())
-        println("EM to km: " + EM.toKilograms().format(0))
+    fun mass() {
+        val mass = unit(1.0, EarthMass)
+        println(mass.format())
+        println(mass.convertTo(Kilogram).format())
     }
 
     @Test
-    fun sm() {
-        val SM = SunMass(1.1)
-        println(SM.name)
-        println(SM.format())
-        println("SM to EM: " + SM.toEarthMass().format())
-        println("SM to kg: " + SM.toKilograms().format(0))
+    fun temperature() {
+        val temperature = unit(100.0, Kelvin)
+        println(temperature.format())
+        println(temperature.convertTo(Celsius).format())
+        println(temperature.convertTo(Fahrenheit).format())
     }
 
     @Test
     fun range() {
-        val RG = Range(EarthMass(1.2), SunMass(10.9).toEarthMass())
-        println(RG.format())
+        val massRange = Range(unit(0.1, EarthMass), unit(10.0, EarthMass))
+        println(massRange.format())
     }
 }
