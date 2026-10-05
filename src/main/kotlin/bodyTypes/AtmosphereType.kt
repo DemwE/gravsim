@@ -1,28 +1,31 @@
 package bodyTypes
 
 enum class AtmosphereType(
-    val DisplayName: String,
-    val Weight: Float,
+    val displayName: String,
+    val weight: Float,
 ) {
-    // SUPER RARE
-    SILICATE_VAPOUR("Silicate Vapour", 0.1f),
+    // SUPER RARE (~0.05% - 0.2% chance)
+    SILICATE_VAPOUR("Silicate Vapour", 0.05f),
 
-    // RARE
-    OXYGEN("Oxygen", 0.3f),
-    NITROGEN("Nitrogen", 0.3f),
-    WATER("Water", 0.3f),
-    HELIUM("Helium Rich", 0.3f),
+    // VERY RARE (~0.5% - 1% chance)
+    OXYGEN("Oxygen", 0.2f),
+    WATER("Water", 0.2f),
+    NITROGEN("Nitrogen", 0.4f),
+    HELIUM("Helium Rich", 0.5f),
 
-    // UNCOMMON
-    AMMONIA("Ammonia", 0.7f),
-    METHANE("Methane", 0.7f),
-    ARGON("Argon", 0.7f),
-    NEON_RICH("Neon Rich", 0.7f),
-    ARGON_RICH("Argon Rich", 0.7f),
-    CARBON_DIOXIDE_RICH("Carbon Dioxide Rich", 0.7f),
+    // RARE / UNCOMMON (~2% - 5% chance)
+    AMMONIA("Ammonia", 1.0f),
+    NEON_RICH("Neon Rich", 1.2f),
+    ARGON_RICH("Argon Rich", 1.5f),
+    ARGON("Argon", 2.0f),
+    CARBON_DIOXIDE_RICH("Carbon Dioxide Rich", 2.5f),
 
-    // COMMON
-    CARBON_DIOXIDE("Carbon Dioxide", 1.0f),
-    SULFUR_DIOXIDE("Sulfur Dioxide", 1.0f),
-    NONE("None", 2.0f),
+    // COMMON (~10% - 15% chance)
+    METHANE("Methane", 8.0f),
+    SULFUR_DIOXIDE("Sulfur Dioxide", 12.0f),
+    CARBON_DIOXIDE("Carbon Dioxide", 20.0f),
+
+    // EXTREMELY COMMON (~50%+ chance)
+    // Most landable planets and moons in ED lack an atmosphere altogether
+    NONE("None", 50.0f),
 }
