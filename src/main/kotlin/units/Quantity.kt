@@ -14,7 +14,7 @@ data class Quantity<U : Unit<U>>(
         return unit.name
     }
 
-    fun format(precision: Int = 4): String {
+    fun format(precision: Int = 5): String {
         return formatWithUnit(value, unit.symbol, precision)
     }
 }

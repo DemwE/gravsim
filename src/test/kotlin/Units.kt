@@ -9,6 +9,7 @@ class UnitsTest {
         val distance = unit(2.0, AstronomicalUnit)
         println(distance.format())
         println(distance.convertTo(Kilometer).format())
+        println(distance.convertTo(LightYear).format(12))
     }
 
     @Test
