@@ -40,6 +40,6 @@ data class CelestialBody(
                 transparentAtmosphere
             )
         }
-        DrawCircleV(position, radius.value.toFloat(), color)
+        drawSmoothCircle(position, radius.value.toFloat(), color)
     }
 }

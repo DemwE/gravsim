@@ -48,6 +48,6 @@ data class Star(
         )
 
         // 2. Rysowanie rdzenia gwiazdy
-        DrawCircleV(position, radius.value.toFloat(), color)
+        drawSmoothCircle(position, radius.value.toFloat(), color)
     }
 }

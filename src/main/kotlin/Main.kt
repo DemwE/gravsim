@@ -14,7 +14,8 @@ fun main() {
     val camera = Camera2D()
         .offset(Vector2().x(GetScreenWidth() / 2f).y(GetScreenHeight() / 2f))
         .target(Vector2())
-        .zoom(0.003f)
+        .zoom(0.001f)
+    val cameraController = CameraController()
 
     val sun = Star(
         name = "Sun",
@@ -31,7 +32,9 @@ fun main() {
         atmosphere = AtmosphereType.METHANE,
         mass = unit(0.5, EarthMass),
         radius = unit(3000.0, Kilometer),
-        position = Vector2().x(150000f).y(0f)
+        position = Vector2()
+            .x(unit(0.12, AstronomicalUnit).convertToUnit(Kilometer).value.toFloat())
+            .y(0f)
     )
 
     val planet2 = CelestialBody(
@@ -40,14 +43,16 @@ fun main() {
         atmosphere = AtmosphereType.OXYGEN,
         mass = unit(0.5, EarthMass),
         radius = unit(3000.0, Kilometer),
-        position = Vector2().x(160000f).y(0f)
+        position = Vector2()
+            .x(unit(0.1, AstronomicalUnit).convertToUnit(Kilometer).value.toFloat())
+            .y(0f)
     )
 
     while (!WindowShouldClose()) {
-        camera.offset(Vector2().x(GetScreenWidth() / 2f).y(GetScreenHeight() / 2f))
+        cameraController.update(camera)
 
         BeginDrawing()
-        ClearBackground(BLACK);
+        ClearBackground(BLUE);
         BeginMode2D(camera)
         sun.draw()
         planet1.draw()

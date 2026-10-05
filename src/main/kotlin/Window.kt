@@ -11,7 +11,7 @@ fun initializeWindow() {
     val screenHeight = GetMonitorHeight(monitor)
     CloseWindow()
 
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE or FLAG_WINDOW_HIGHDPI)
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE or FLAG_WINDOW_HIGHDPI or FLAG_MSAA_4X_HINT)
 
     val windowWidth = screenWidth / 2
     val windowHeight = screenHeight / 2
