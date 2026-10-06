@@ -2,7 +2,7 @@ package spaceObjects
 
 import com.raylib.Raylib.*
 
-interface Object {
+interface GravityObject {
     val name: String
     var position: Vector2
 

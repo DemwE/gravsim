@@ -15,7 +15,7 @@ data class CelestialBody(
     val mass: Quantity<EarthMass>,
     val radius: Quantity<Kilometer>,
     override var position: Vector2 = Vector2().x(0f).y(0f)
-) : Object {
+) : GravityObject {
     init {
         require(atmosphere in type.atmosphere) {
             "${atmosphere.displayName} is not a valid atmosphere for ${type.displayName}"

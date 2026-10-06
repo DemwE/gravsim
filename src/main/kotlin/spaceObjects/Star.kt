@@ -15,7 +15,7 @@ data class Star(
     val radius: Quantity<Kilometer>,
     val temperature: Quantity<Kelvin>,
     override var position: Vector2 = Vector2().x(0f).y(0f)
-) : Object {
+) : GravityObject {
     fun starGlow(color: Color): Pair<Color, Color> {
         val glowColorInner: Color = Color()
             .r(color.r())
