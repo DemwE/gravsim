@@ -21,10 +21,10 @@ class CameraController {
             )
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE)) {
+        if (IsMouseButtonPressed((MOUSE_BUTTON_LEFT))) {
             isDragging = true
         }
-        if (IsMouseButtonReleased(MOUSE_BUTTON_MIDDLE)) {
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             isDragging = false
         }
         if (isDragging) {

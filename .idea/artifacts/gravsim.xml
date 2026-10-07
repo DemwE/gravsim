@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="gravsim">
+    <output-path>$PROJECT_DIR$/out/artifacts/gravsim</output-path>
+    <root id="archive" name="gravsim.jar">
+      <element id="module-output" name="gravsim.main" />
+      <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:2.4.20" />
+      <element id="library" level="project" name="Gradle: org.jetbrains:annotations:13.0" />
+      <element id="library" level="project" name="Gradle: uk.co.electronstudio.jaylib:jaylib:6.0.1-0" />
+    </root>
+  </artifact>
+</component>

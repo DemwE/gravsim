@@ -4,7 +4,7 @@ import lib.Seed
 import java.time.Instant
 
 fun main() {
-    SetTargetFPS(60)
+    SetTargetFPS(1024)
     initializeWindow()
 
     val camera = Camera2D()
@@ -13,8 +13,8 @@ fun main() {
         .zoom(0.001f)
     val cameraController = CameraController()
 
-    val system = System("System", Seed(Instant.now().toEpochMilli()))
-    system.populate(planets = 10)
+    val system = SolarSystem("System", Seed(Instant.now().toEpochMilli()))
+    system.populate(planets = 1)
 
     while (!WindowShouldClose()) {
         cameraController.update(camera)
@@ -22,9 +22,11 @@ fun main() {
         BeginDrawing()
         ClearBackground(BLACK);
         BeginMode2D(camera)
+        system.update(GetFrameTime())
         system.objects.forEach { it.draw() }
 
         EndMode2D()
+        DrawFPS(20, 20);
         EndDrawing()
     }
 
