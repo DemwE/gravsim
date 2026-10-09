@@ -1,70 +1,58 @@
 package spaceObjects
 
-import com.raylib.Raylib.*
 import kotlin.math.sqrt
 
-fun setCircumbinaryOrbit(
+/**
+ * Nadaje satelicie prędkość kołową wokół środka masy podanych ciał ([centers] — jedno lub więcej).
+ * Uwzględnia prędkość barycentrum (np. przy układzie podwójnym).
+ */
+fun setCircularOrbit(
     satellite: GravityObject,
-    star1: GravityObject,
-    star2: GravityObject,
-    G: Float,
+    centers: List<GravityObject>,
     clockwise: Boolean = true
 ) {
-    val m1 = star1.mass.value.toFloat()
-    val m2 = star2.mass.value.toFloat()
-    val totalMass = m1 + m2
+    require(centers.isNotEmpty()) { "Orbit requires at least one central body" }
 
-    // 1. Wyznaczenie środka masy obu gwiazd
-    val cx = (star1.position.x() * m1 + star2.position.x() * m2) / totalMass
-    val cy = (star1.position.y() * m1 + star2.position.y() * m2) / totalMass
+    val totalMass = centers.sumOf { it.mass.value }
+    require(totalMass > 0.0) { "Total central mass must be positive" }
 
-    // Średnia prędkość środka masy
-    val cvx = (star1.velocity.x() * m1 + star2.velocity.x() * m2) / totalMass
-    val cvy = (star1.velocity.y() * m1 + star2.velocity.y() * m2) / totalMass
+    val cx = centers.sumOf { it.position.x * it.mass.value } / totalMass
+    val cy = centers.sumOf { it.position.y * it.mass.value } / totalMass
+    val cvx = centers.sumOf { it.velocity.x * it.mass.value } / totalMass
+    val cvy = centers.sumOf { it.velocity.y * it.mass.value } / totalMass
 
-    // 2. Wektor od środka masy do satelity
-    val dx = satellite.position.x() - cx
-    val dy = satellite.position.y() - cy
-    val r = sqrt((dx * dx + dy * dy).toDouble()).toFloat()
+    val dx = satellite.position.x - cx
+    val dy = satellite.position.y - cy
+    val r = sqrt(dx * dx + dy * dy)
+    if (r == 0.0) return
 
-    if (r == 0f) return
-
-    // 3. Wartość prędkości wzgledem łącznej masy
-    val speed = sqrt((G * totalMass / r).toDouble()).toFloat()
-
-    // 4. Wektor prostopadły
+    val speed = sqrt(G * totalMass / r)
     val tangentX = if (clockwise) -dy else dy
     val tangentY = if (clockwise) dx else -dx
 
-    val nx = tangentX / r
-    val ny = tangentY / r
-
-    satellite.velocity = Vector2()
-        .x(cvx + nx * speed)
-        .y(cvy + ny * speed)
+    satellite.velocity = Vec2(
+        cvx + tangentX / r * speed,
+        cvy + tangentY / r * speed
+    )
 }
 
-fun setBinaryStarOrbit(star1: GravityObject, star2: GravityObject, G: Float) {
-    val dx = star2.position.x() - star1.position.x()
-    val dy = star2.position.y() - star1.position.y()
-    val r = sqrt((dx * dx + dy * dy).toDouble()).toFloat()
+/**
+ * Nadaje dwóm gwiazdom prędkości orbitalne wokół ich wspólnego środka masy.
+ */
+fun setBinaryStarOrbit(star1: GravityObject, star2: GravityObject) {
+    val dx = star2.position.x - star1.position.x
+    val dy = star2.position.y - star1.position.y
+    val r = sqrt(dx * dx + dy * dy)
+    if (r == 0.0) return
 
-    val m1 = star1.mass.value.toFloat()
-    val m2 = star2.mass.value.toFloat()
+    val m1 = star1.mass.value
+    val m2 = star2.mass.value
     val totalMass = m1 + m2
 
-    // Prędkość całkowita w układzie względnym: v = sqrt(G * (m1 + m2) / r)
-    val vRel = sqrt((G * totalMass / r).toDouble()).toFloat()
-
-    // Wektor prostopadły znormalizowany
+    val vRel = sqrt(G * totalMass / r)
     val nx = -dy / r
     val ny = dx / r
 
-    // Prędkości dzielą się odwrotnie proporcjonalnie do mas
-    star1.velocity = Vector2()
-        .x(-nx * vRel * (m2 / totalMass))
-        .y(-ny * vRel * (m2 / totalMass))
-    star2.velocity = Vector2()
-        .x(nx * vRel * (m1 / totalMass))
-        .y(ny * vRel * (m1 / totalMass))
+    star1.velocity = Vec2(-nx * vRel * (m2 / totalMass), -ny * vRel * (m2 / totalMass))
+    star2.velocity = Vec2(nx * vRel * (m1 / totalMass), ny * vRel * (m1 / totalMass))
 }

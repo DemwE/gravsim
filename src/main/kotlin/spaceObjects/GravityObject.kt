@@ -5,33 +5,34 @@ import units.*
 
 interface GravityObject {
     val name: String
-    val mass: Quantity<Kilogram>
-    var position: Vector2
-    var velocity: Vector2
+    var mass: Quantity<Kilogram>
+    var radius: Quantity<Kilometer>
+    var position: Vec2
+    var velocity: Vec2
 
-    // Kolekcja punktów historii pozycji
+    // Historia pozycji. Trzymamy Vector2 (Float) — to dane wyłącznie do rysowania.
     val trailPoints: MutableList<Vector2>
     var maxTrailPoints: Int
+
+    // Minimalny dystans (km) między kolejnymi próbkami śladu.
+    var trailSegmentKm: Double
 
     fun draw()
 
     /**
-     * Dodaje bieżącą pozycję do śladu.
-     * Zapobiega również nakładaniu się bardzo bliskich punktów dla lepszej wydajności.
+     * Dodaje bieżącą pozycję do śladu, o ile obiekt przesunął się o [trailSegmentKm].
+     * Próbkowanie po dystansie, a nie po klatce, uniezależnia ślad od FPS i prędkości symulacji.
      */
-    fun updateTrail(minDistanceKm: Float = 100f) {
-        val currentX = position.x()
-        val currentY = position.y()
-
+    fun updateTrail() {
+        val threshold = trailSegmentKm
         if (trailPoints.isNotEmpty()) {
             val last = trailPoints.last()
-            val dx = currentX - last.x()
-            val dy = currentY - last.y()
-            // Rejestrujemy nowy punkt tylko gdy obiekt przesunął się o minimalny dystans
-            if (dx * dx + dy * dy < minDistanceKm * minDistanceKm) return
+            val dx = position.x - last.x()
+            val dy = position.y - last.y()
+            if (dx * dx + dy * dy < threshold * threshold) return
         }
 
-        trailPoints.add(Vector2().x(currentX).y(currentY))
+        trailPoints.add(position.toVector2())
 
         if (trailPoints.size > maxTrailPoints) {
             trailPoints.removeAt(0)
@@ -39,7 +40,7 @@ interface GravityObject {
     }
 
     /**
-     * Rysuje pasek orbity z płynnym zanikaniem (alpha gradient).
+     * Rysuje ślad z płynnym zanikaniem (alpha rośnie w stronę najnowszego odcinka).
      */
     fun drawTrail(baseColor: Color) {
         val count = trailPoints.size
@@ -49,7 +50,6 @@ interface GravityObject {
             val p1 = trailPoints[i]
             val p2 = trailPoints[i + 1]
 
-            // Keep the newest segment visible; the oldest segment fades to transparent.
             val alphaProgress = ((i + 1).toFloat() / (count - 1))
             val alpha = (alphaProgress * 255).toInt().coerceIn(0, 255)
 

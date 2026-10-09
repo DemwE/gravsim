@@ -1,53 +1,111 @@
 package spaceObjects
 
-import com.raylib.Raylib.*
+import kotlin.math.cbrt
 import kotlin.math.sqrt
+import units.Kilogram
+import units.Kilometer
+import units.Quantity
 
-// G in km^3 / (kg * s^2), matching the simulation's kilometer-based positions.
-const val G: Float = 6.67430e-20f
+// G w jednostkach (km^3 / (kg * s^2)), dopasowana do pozycji w kilometrach.
+const val G: Double = 6.67430e-20
 
-// Dodajemy tzw. "softening factor", aby zapobiec dzieleniu przez 0 i wystrzeliwaniu obiektów w kosmos przy bliskim kontakcie
-const val SOFTENING: Float = 100f
+// Maksymalny pojedynczy krok integracji w sekundach symulacji.
+const val MAX_PHYSICS_STEP: Double = 600.0
 
-fun updateGravity(objects: List<GravityObject>, dt: Float) {
-    // 1. Obliczamy siły / przyspieszenia wywierane na każdy obiekt
-    for (i in objects.indices) {
-        val objA = objects[i]
+// Bezpiecznik — maksymalna liczba podkroków na jedną klatkę.
+const val MAX_SUBSTEPS: Int = 2000
 
-        for (j in i + 1 until objects.size) {
-            val objB = objects[j]
+/**
+ * Pojedynczy krok grawitacji (półjawna metoda Eulera).
+ * Przyspieszenia zbierane są w tablicach, więc wynik nie zależy od kolejności par.
+ */
+fun stepPhysics(objects: List<GravityObject>, dt: Double) {
+    if (objects.isEmpty() || dt <= 0.0) return
 
-            // Wektor od A do B
-            val dx = objB.position.x() - objA.position.x()
-            val dy = objB.position.y() - objA.position.y()
+    val count = objects.size
+    val accX = DoubleArray(count)
+    val accY = DoubleArray(count)
 
-            // Odległość kwadratowa z czynnikiem złagodzenia (softening)
-            val distSq = dx * dx + dy * dy + SOFTENING
-            val dist = sqrt(distSq.toDouble()).toFloat()
+    for (i in 0 until count) {
+        val a = objects[i]
+        for (j in i + 1 until count) {
+            val b = objects[j]
+            val dx = b.position.x - a.position.x
+            val dy = b.position.y - a.position.y
 
-            // Wektor jednostkowy (kierunek siły)
-            val nx = dx / dist
-            val ny = dy / dist
+            // Softening w skali promieni ciał — usuwa osobliwość 1/r^2 przy bliskim kontakcie.
+            val softening = a.radius.value + b.radius.value
+            val distSq = dx * dx + dy * dy + softening * softening
+            val invDist = 1.0 / sqrt(distSq)
+            val nx = dx * invDist
+            val ny = dy * invDist
 
-            // Wartość przyspieszenia: a = G * m / r^2
-            // Pamiętaj o wyciągnięciu wartości liczbowej z Quantity<Kilogram> (np. .value)
-            val massA = objA.mass.value.toFloat()
-            val massB = objB.mass.value.toFloat()
+            val accA = G * b.mass.value / distSq
+            val accB = G * a.mass.value / distSq
 
-            val accelA = G * massB / distSq
-            val accelB = G * massA / distSq
-
-            // Zwiększamy prędkości obiektów
-            objA.velocity = Vector2().x(objA.velocity.x() + nx * accelA * dt).y(objA.velocity.y() + ny * accelA * dt)
-
-            // Obiekt B przyciąga się w przeciwną stronę (-nx, -ny)
-            objB.velocity = Vector2().x(objB.velocity.x() - nx * accelB * dt).y(objB.velocity.y() - ny * accelB * dt)
+            accX[i] += nx * accA
+            accY[i] += ny * accA
+            accX[j] -= nx * accB
+            accY[j] -= ny * accB
         }
     }
 
-    // 2. Aktualizujemy pozycję na podstawie obliczonej prędkości
-    for (obj in objects) {
-        obj.position = Vector2().x(obj.position.x() + obj.velocity.x() * dt).y(obj.position.y() + obj.velocity.y() * dt)
+    for (i in 0 until count) {
+        val obj = objects[i]
+        val velocity = Vec2(obj.velocity.x + accX[i] * dt, obj.velocity.y + accY[i] * dt)
+        obj.velocity = velocity
+        obj.position = Vec2(obj.position.x + velocity.x * dt, obj.position.y + velocity.y * dt)
         obj.updateTrail()
     }
+}
+
+/**
+ * Scala ciała, których tarcze się przecinają (zderzenie nieelastyczne):
+ * zachowany pęd, suma mas, promień z sumy objętości. Zapobiega "wystrzeliwaniu" przy kolizji.
+ */
+fun resolveCollisions(objects: MutableList<GravityObject>) {
+    var i = 0
+    while (i < objects.size) {
+        var j = i + 1
+        var merged = false
+        while (j < objects.size) {
+            val a = objects[i]
+            val b = objects[j]
+            val dx = b.position.x - a.position.x
+            val dy = b.position.y - a.position.y
+            val contact = a.radius.value + b.radius.value
+
+            if (dx * dx + dy * dy <= contact * contact) {
+                val dominant = if (a.mass.value >= b.mass.value) a else b
+                val absorbed = if (dominant === a) b else a
+                mergeInto(dominant, absorbed)
+                val index = objects.indexOfFirst { it === absorbed }
+                if (index >= 0) objects.removeAt(index)
+                merged = true
+                break
+            }
+            j++
+        }
+        if (!merged) i++
+    }
+}
+
+private fun mergeInto(primary: GravityObject, absorbed: GravityObject) {
+    val m1 = primary.mass.value
+    val m2 = absorbed.mass.value
+    val totalMass = m1 + m2
+
+    primary.position = Vec2(
+        (primary.position.x * m1 + absorbed.position.x * m2) / totalMass,
+        (primary.position.y * m1 + absorbed.position.y * m2) / totalMass
+    )
+    primary.velocity = Vec2(
+        (primary.velocity.x * m1 + absorbed.velocity.x * m2) / totalMass,
+        (primary.velocity.y * m1 + absorbed.velocity.y * m2) / totalMass
+    )
+    primary.mass = Quantity(totalMass, Kilogram)
+
+    val r1 = primary.radius.value
+    val r2 = absorbed.radius.value
+    primary.radius = Quantity(cbrt(r1 * r1 * r1 + r2 * r2 * r2), Kilometer)
 }

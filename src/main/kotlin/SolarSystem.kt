@@ -1,24 +1,36 @@
 import bodyTypes.CelestialBodyType
 import bodyTypes.StarType
-import com.raylib.Raylib.Vector2
 import lib.Seed
-import spaceObjects.updateGravity
+import spaceObjects.CelestialBody
+import spaceObjects.G
+import spaceObjects.GravityObject
+import spaceObjects.MAX_PHYSICS_STEP
+import spaceObjects.MAX_SUBSTEPS
+import spaceObjects.Star
+import spaceObjects.Vec2
+import spaceObjects.resolveCollisions
+import spaceObjects.setBinaryStarOrbit
+import spaceObjects.setCircularOrbit
+import spaceObjects.stepPhysics
 import units.AstronomicalUnit
-import kotlin.random.Random
 import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.random.Random
 import units.*
-
-// Stała G w jednostkach (km^3 / (kg * s^2))
-const val G_KM: Double = 6.67430e-20
 
 class SolarSystem(
     val name: String,
     val seed: Seed,
 ) {
-    val objects: MutableList<spaceObjects.GravityObject> = mutableListOf()
+    val objects: MutableList<GravityObject> = mutableListOf()
+
+    // Prędkość symulacji dobrana tak, by najciaśniejsza orbita trwała ~12 s.
+    var suggestedTimeScale: Double = 1.0e5
+        private set
 
     fun populate(planets: Int) {
         require(planets >= 0) { "Planet count cannot be negative" }
@@ -29,7 +41,7 @@ class SolarSystem(
         val astronomicalUnitKm = unit(1.0, AstronomicalUnit).convertTo(Kilometer).value
         val starGapKm = astronomicalUnitKm
         val planetGapKm = astronomicalUnitKm * 0.1
-        val stars = mutableListOf<spaceObjects.Star>()
+        val stars = mutableListOf<Star>()
 
         repeat(starCount) { index ->
             val type = weightedRandom(StarType.entries, random) { it.weight }
@@ -40,7 +52,7 @@ class SolarSystem(
                 type.temperatureRange.max.value
             )
 
-            stars += spaceObjects.Star(
+            stars += Star(
                 name = if (starCount == 1) name else "$name ${if (index == 0) "A" else "B"}",
                 type = type,
                 mass = unit(mass, SolarMass).convertTo(Kilogram),
@@ -53,53 +65,33 @@ class SolarSystem(
         // 1. POZYCJONOWANIE I PRĘDKOŚĆ GWIAZD
         // ==========================================
         if (stars.size == 1) {
-            stars[0].position = Vector2().x(0f).y(0f)
-            stars[0].velocity = Vector2().x(0f).y(0f)
-        } else if (stars.size == 2) {
+            stars[0].position = Vec2()
+            stars[0].velocity = Vec2()
+        } else {
+            val m1 = stars[0].mass.value
+            val m2 = stars[1].mass.value
+            val totalMass = m1 + m2
+
             val minimumSeparation = stars.sumOf { it.radius.value } * 3.0
             val separation = maxOf(starGapKm, minimumSeparation)
 
-            // Ustawienie pozycji (na osi X)
-            stars[0].position = Vector2().x((-separation / 2.0).toFloat()).y(0f)
-            stars[1].position = Vector2().x((separation / 2.0).toFloat()).y(0f)
-
-            // Wyliczenie prędkości orbitalnych dla 2 gwiazd
-            val m1 = stars[0].mass.value
-            val m2 = stars[1].mass.value
-            val totalStarMass = m1 + m2
-
-            // Prędkość względna: v = sqrt(G * (m1 + m2) / r)
-            val vRel = sqrt(G_KM * totalStarMass / separation)
-
-            // Wektor prostopadły w górę/dół (kierunek osi Y)
-            val v1y = -vRel * (m2 / totalStarMass)
-            val v2y = vRel * (m1 / totalStarMass)
-
-            stars[0].velocity = Vector2().x(0f).y(v1y.toFloat())
-            stars[1].velocity = Vector2().x(0f).y(v2y.toFloat())
+            // Gwiazdy symetrycznie względem środka masy umieszczonego w początku układu.
+            stars[0].position = Vec2(-separation * (m2 / totalMass), 0.0)
+            stars[1].position = Vec2(separation * (m1 / totalMass), 0.0)
+            setBinaryStarOrbit(stars[0], stars[1])
         }
 
         objects += stars
 
-        // Wyznaczenie środka masy i sumarycznej masy gwiazd dla planet
         val totalStarsMass = stars.sumOf { it.mass.value }
 
-        // Środek masy gwiazd (barycentrum)
-        val centerOfMassX = stars.sumOf { it.position.x().toDouble() * it.mass.value } / totalStarsMass
-        val centerOfMassY = stars.sumOf { it.position.y().toDouble() * it.mass.value } / totalStarsMass
-
-        // Średnia prędkość barycentrum (powinna wynosić 0,0)
-        val centerOfMassVx = stars.sumOf { it.velocity.x().toDouble() * it.mass.value } / totalStarsMass
-        val centerOfMassVy = stars.sumOf { it.velocity.y().toDouble() * it.mass.value } / totalStarsMass
-
         // ==========================================
-        // 2. TWORZENIE PLANET I NADAWANIE PRĘDKOŚCI
+        // 2. PLANETY NA ORBITACH KOŁOWYCH
         // ==========================================
-        val outermostStar = stars.maxOf {
-            kotlin.math.abs(it.position.x().toDouble()) + it.radius.value
-        }
+        val outermostStar = stars.maxOf { abs(it.position.x) + it.radius.value }
         var previousPlanetRadius = 0.0
         var orbitRadius = 0.0
+        var innerOrbitRadius = 0.0
 
         repeat(planets) { index ->
             val type = weightedRandom(CelestialBodyType.entries, random) { it.weight }
@@ -113,39 +105,31 @@ class SolarSystem(
                 orbitRadius + previousPlanetRadius + radius + planetGapKm
             }
             previousPlanetRadius = radius
+            if (index == 0) innerOrbitRadius = orbitRadius
 
             val angle = random.nextDouble(0.0, 2.0 * PI)
-
-            // Wyznaczamy pozycję względem barycentrum gwiazd
-            val px = centerOfMassX + cos(angle) * orbitRadius
-            val py = centerOfMassY + sin(angle) * orbitRadius
-
-            // Prędkość pierwszej prędkości kosmicznej wokół całkowitej masy gwiazd:
-            // v = sqrt(G * M_total / r)
-            val orbitalSpeed = sqrt(G_KM * totalStarsMass / orbitRadius)
-
-            // Wektor styczny (prostopadły do kąta pozycji)
-            // Daje ruch po orbicie przeciwnie do ruchu wskazówek zegara
-            val vx = centerOfMassVx - sin(angle) * orbitalSpeed
-            val vy = centerOfMassVy + cos(angle) * orbitalSpeed
-
-            val planet = spaceObjects.CelestialBody(
+            val planet = CelestialBody(
                 name = "Planet ${index + 1}",
                 type = type,
                 atmosphere = atmosphere,
                 mass = unit(mass, EarthMass).convertTo(Kilogram),
                 radius = unit(radius, Kilometer),
-                position = Vector2()
-                    .x(px.toFloat())
-                    .y(py.toFloat())
+                position = Vec2(cos(angle) * orbitRadius, sin(angle) * orbitRadius)
             )
 
-            // Nadajemy wyliczoną prędkość początkową
-            planet.velocity = Vector2()
-                .x(vx.toFloat())
-                .y(vy.toFloat())
+            setCircularOrbit(planet, stars)
+
+            // Ślad pokrywa dokładnie jedną orbitę.
+            planet.trailSegmentKm = 2.0 * PI * orbitRadius / planet.maxTrailPoints
 
             objects += planet
+        }
+
+        if (planets > 0) {
+            val innerPeriod = 2.0 * PI * sqrt(
+                innerOrbitRadius * innerOrbitRadius * innerOrbitRadius / (G * totalStarsMass)
+            )
+            suggestedTimeScale = innerPeriod / 12.0
         }
     }
 
@@ -174,7 +158,19 @@ class SolarSystem(
         return items[weights.indexOfLast { it > 0f }]
     }
 
-    fun update(dt: Float) {
-        updateGravity(objects, dt)
+    /**
+     * Krok symulacji o czasie [dtSim] sekund (już przeskalowanym przez timeScale).
+     * Dzielony na podkroki, by duże przyspieszenia i duże timeScale nie wybuchały.
+     */
+    fun update(dtSim: Double) {
+        if (dtSim <= 0.0 || objects.isEmpty()) return
+
+        val steps = ceil(dtSim / MAX_PHYSICS_STEP).toInt().coerceIn(1, MAX_SUBSTEPS)
+        val step = dtSim / steps
+
+        repeat(steps) {
+            stepPhysics(objects, step)
+            resolveCollisions(objects)
+        }
     }
 }
