@@ -2,12 +2,6 @@ package engine.barneshut
 
 import engine.QuadtreePool
 
-/**
- * 2D Barnes–Hut N-body gravity algorithm.
- *
- * Coordinates quadtree space partitioning ([BarnesHutTree]) and multipole force traversal
- * ([BarnesHutForceCalculator]).
- */
 class BarnesHut internal constructor(
     private val pool: QuadtreePool = QuadtreePool()
 ) {

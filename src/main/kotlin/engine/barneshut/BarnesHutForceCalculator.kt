@@ -4,9 +4,6 @@ import engine.G
 import engine.QuadtreePool
 import kotlin.math.sqrt
 
-/**
- * Gravity force calculator using Barnes–Hut multipole approximation.
- */
 internal class BarnesHutForceCalculator(
     private val pool: QuadtreePool
 ) {

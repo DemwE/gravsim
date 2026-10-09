@@ -4,11 +4,6 @@ import engine.BARNES_HUT_MAX_DEPTH
 import engine.MAP_HALF_KM
 import engine.QuadtreePool
 
-/**
- * 2D Barnes–Hut Quadtree builder.
- *
- * Recursively subdivides 2D space into quadrants to aggregate mass and center-of-mass.
- */
 internal class BarnesHutTree(
     val pool: QuadtreePool
 ) {

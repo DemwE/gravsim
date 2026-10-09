@@ -2,12 +2,6 @@ package engine
 
 import kotlin.math.cbrt
 
-/**
- * Perfectly inelastic collision resolver for celestial bodies.
- *
- * Merges overlapping spheres into the heavier body, conserving total mass and linear momentum.
- * New radius assumes constant density ($V_1 + V_2 \propto r_1^3 + r_2^3$).
- */
 internal object CollisionResolver {
 
     fun resolveCollisions(buffers: BodyBuffers) {

@@ -3,12 +3,6 @@ package engine
 import engine.barneshut.BarnesHut
 import spaceObjects.GravityObject
 
-/**
- * Single-algorithm (Barnes–Hut) N-body physics engine.
- *
- * Coordinates Structure-of-Arrays (SOA) memory layout, Barnes–Hut quadtree acceleration,
- * multi-threaded force calculation, numerical integration, boundary escaping, and collision resolution.
- */
 class PhysicsEngine(
     val bodies: MutableList<GravityObject>,
     initialCapacity: Int = bodies.size,

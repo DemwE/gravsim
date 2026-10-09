@@ -1,11 +1,5 @@
 package engine
 
-/**
- * First-order symplectic (semi-implicit) Euler integrator.
- *
- * Updates velocity first from acceleration, then position from the new velocity.
- * Preserves phase space volume, making it stable for bound orbital systems.
- */
 internal object Integrator {
 
     fun integrateSymplecticEuler(buffers: BodyBuffers, dt: Double) {

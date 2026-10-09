@@ -4,9 +4,6 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-/**
- * Worker pool dispatcher for parallelizing body ranges across CPU cores.
- */
 internal class ParallelDispatcher(threads: Int) {
     val threadCount: Int = threads.coerceAtLeast(1)
     private var pool: ExecutorService? = null
