@@ -15,6 +15,7 @@ class SolarSystem(
     )
 
     val objects: MutableList<GravityObject> = mutableListOf()
+    private val engine = PhysicsEngine(objects)
 
     var suggestedTimeScale: Double = 1.0e5
         private set
@@ -111,6 +112,8 @@ class SolarSystem(
             )
             suggestedTimeScale = innerPeriod / 12.0
         }
+
+        engine.rebuild()
     }
 
     private fun <T> weightedRandom(
@@ -145,8 +148,19 @@ class SolarSystem(
         val step = dtSim / steps
 
         repeat(steps) {
-            stepPhysics(objects, step)
-            resolveCollisions(objects)
+            engine.step(step)
+
+            for (i in 0 until engine.count) {
+                objects[i].updateTrail(engine.positionX(i), engine.positionY(i))
+            }
+
+            engine.resolveCollisions()
         }
+
+        engine.syncToObjects()
+    }
+
+    fun close() {
+        engine.close()
     }
 }

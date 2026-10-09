@@ -15,7 +15,7 @@ class CelestialBody(
     radius: Quantity<Kilometer>,
     position: Vec2 = Vec2(),
     velocity: Vec2 = Vec2(),
-    trailPoints: MutableList<Vector2> = mutableListOf(),
+    trailPoints: ArrayDeque<Vector2> = ArrayDeque(),
     maxTrailPoints: Int = 800,
     trailSegmentKm: Double = 1000.0,
 ) : GravityObject(

@@ -5,8 +5,8 @@ import ui.GuiFont
 import ui.SimulationHud
 import java.time.Instant
 
-private const val TARGET_FPS = 60
-private const val DEFAULT_PLANETS = 10
+private const val TARGET_FPS = 120
+private const val DEFAULT_PLANETS = 200
 private const val MAX_FRAME_TIME = 0.05f
 
 fun main() {
@@ -78,6 +78,7 @@ fun main() {
         }
 
         if (IsKeyPressed(KEY_R)) {
+            system.close()
             system = SolarSystem(Seed(Instant.now().toEpochMilli()))
             system.populate(planets = DEFAULT_PLANETS)
             timeScale = system.suggestedTimeScale
@@ -90,6 +91,14 @@ fun main() {
             val dtSim = GetFrameTime().coerceAtMost(MAX_FRAME_TIME).toDouble() * timeScale
             system.update(dtSim)
             simulatedTime += dtSim
+        }
+
+        if (hud.selectedObject != null && hud.selectedObject !in system.objects) {
+            hud.selectedObject = null
+            cameraController.follow(null)
+        }
+        if (cameraController.followedObject != null && cameraController.followedObject !in system.objects) {
+            cameraController.follow(null)
         }
 
         BeginDrawing()
@@ -106,5 +115,6 @@ fun main() {
     }
 
     GuiFont.unload()
+    system.close()
     CloseWindow()
 }
