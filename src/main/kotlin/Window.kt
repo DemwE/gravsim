@@ -19,6 +19,7 @@ fun initializeWindow() {
     val posY = (screenHeight - windowHeight) / 2
 
     InitWindow(windowWidth, windowHeight, WINDOW_TITLE)
+    SetExitKey(KEY_NULL)
     SetWindowPosition(posX, posY)
     SetWindowMinSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
 }

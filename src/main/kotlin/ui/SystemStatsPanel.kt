@@ -14,7 +14,7 @@ import java.util.Locale
 class SystemStatsPanel {
     private val panelBg = Color().r(15.toByte()).g(15.toByte()).b(20.toByte()).a(200.toByte())
 
-    fun draw(screenWidth: Int, objects: List<GravityObject>, showOverlay: Boolean, scale: Float = 1.0f) {
+    fun draw(screenWidth: Int, objects: List<GravityObject>, showOverlay: Boolean, systemName: String = "System", scale: Float = 1.0f) {
         val panelWidth = (320 * scale).toInt()
         val panelHeight = (135 * scale).toInt()
         val panelX = screenWidth - panelWidth - (15 * scale).toInt()
@@ -30,7 +30,7 @@ class SystemStatsPanel {
         val systemRadiusKm = objects.maxOfOrNull { it.position.length() } ?: 0.0
 
         val textX = panelX + (12 * scale).toInt()
-        GuiFont.drawText("SYSTEM STATISTICS", textX, panelY + (8 * scale).toInt(), (14 * scale).toInt(), SKYBLUE)
+        GuiFont.drawText("SYSTEM: $systemName", textX, panelY + (8 * scale).toInt(), (14 * scale).toInt(), SKYBLUE)
         GuiFont.drawText("Celestial bodies: $starsCount stars, $planetsCount planets", textX, panelY + (28 * scale).toInt(), (13 * scale).toInt(), LIGHTGRAY)
         GuiFont.drawText(String.format(Locale.US, "Total mass: %.3f %s", totalMassSm, SolarMass.symbol), textX, panelY + (46 * scale).toInt(), (13 * scale).toInt(), LIGHTGRAY)
         GuiFont.drawText("System radius: ${formatDistance(systemRadiusKm)}", textX, panelY + (64 * scale).toInt(), (13 * scale).toInt(), LIGHTGRAY)

@@ -1,5 +1,6 @@
 import bodyTypes.CelestialBodyType
 import bodyTypes.StarType
+import lib.NameGenerator
 import lib.Seed
 import spaceObjects.CelestialBody
 import spaceObjects.G
@@ -26,6 +27,11 @@ class SolarSystem(
     val name: String,
     val seed: Seed,
 ) {
+    constructor(seed: Seed) : this(
+        name = NameGenerator.generateSystemName(Random(seed.value)),
+        seed = seed,
+    )
+
     val objects: MutableList<GravityObject> = mutableListOf()
 
     var suggestedTimeScale: Double = 1.0e5
@@ -51,8 +57,9 @@ class SolarSystem(
                 type.temperatureRange.max.value
             )
 
+            val starName = NameGenerator.formatStarName(name, index, starCount)
             stars += Star(
-                name = if (starCount == 1) name else "$name ${if (index == 0) "A" else "B"}",
+                name = starName,
                 type = type,
                 mass = unit(mass, SolarMass).convertTo(Kilogram),
                 radius = unit(radius, Kilometer),
@@ -100,8 +107,9 @@ class SolarSystem(
             if (index == 0) innerOrbitRadius = orbitRadius
 
             val angle = random.nextDouble(0.0, 2.0 * PI)
+            val planetName = NameGenerator.formatPlanetName(name, index, starCount)
             val planet = CelestialBody(
-                name = "Planet ${index + 1}",
+                name = planetName,
                 type = type,
                 atmosphere = atmosphere,
                 mass = unit(mass, EarthMass).convertTo(Kilogram),

@@ -13,7 +13,7 @@ class SimulationHud(
 ) {
     var showOverlay: Boolean = false
     var selectedObject: GravityObject? = null
-    var scale: Float = 1.0f
+    var scale: Float = 1.3f
 
     fun scaleUp() {
         scale = (scale + 0.1f).coerceAtMost(2.5f)
@@ -56,12 +56,13 @@ class SimulationHud(
         paused: Boolean,
         objects: List<GravityObject>,
         followedObject: GravityObject?,
+        systemName: String = "System",
     ) {
         val screenWidth = GetScreenWidth()
         val screenHeight = GetScreenHeight()
 
         topStatusBar.draw(timeScale, simulatedTime, paused, scale)
-        systemStatsPanel.draw(screenWidth, objects, showOverlay, scale)
+        systemStatsPanel.draw(screenWidth, objects, showOverlay, systemName, scale)
         objectInspectorPanel.draw(screenHeight, selectedObject, followedObject, scale)
         controlsHelpBar.draw(screenWidth, screenHeight, scale)
     }

@@ -20,7 +20,7 @@ fun main() {
     val cameraController = CameraController()
     val hud = SimulationHud()
 
-    var system = SolarSystem("System", Seed(Instant.now().toEpochMilli()))
+    var system = SolarSystem(Seed(Instant.now().toEpochMilli()))
     system.populate(planets = DEFAULT_PLANETS)
 
     var timeScale = system.suggestedTimeScale
@@ -78,7 +78,7 @@ fun main() {
         }
 
         if (IsKeyPressed(KEY_R)) {
-            system = SolarSystem("System", Seed(Instant.now().toEpochMilli()))
+            system = SolarSystem(Seed(Instant.now().toEpochMilli()))
             system.populate(planets = DEFAULT_PLANETS)
             timeScale = system.suggestedTimeScale
             simulatedTime = 0.0
@@ -100,7 +100,7 @@ fun main() {
         EndMode2D()
 
         hud.drawWorldOverlay(camera, system.objects, cameraController.followedObject)
-        hud.drawScreenHud(timeScale, simulatedTime, paused, system.objects, cameraController.followedObject)
+        hud.drawScreenHud(timeScale, simulatedTime, paused, system.objects, cameraController.followedObject, system.name)
 
         EndDrawing()
     }
