@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import engine.BarnesHut
+import engine.barneshut.BarnesHut
 import engine.G
 import spaceObjects.GravityObject
 import engine.MAP_HALF_KM

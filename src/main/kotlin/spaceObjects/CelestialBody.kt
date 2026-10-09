@@ -37,31 +37,32 @@ class CelestialBody(
     val color: Color
         get() = type.color
 
-    override fun draw() {
-        val screenPosition = position.toVector2()
+    private val trailBaseColor: Color by lazy {
+        Color().r(color.r()).g(color.g()).b(color.b()).a(200.toByte())
+    }
 
-        val trailBaseColor = Color()
-            .r(color.r())
-            .g(color.g())
-            .b(color.b())
-            .a(200.toByte())
+    private val atmosphereColor: Color by lazy {
+        atmosphere.colorWithOpacity(opacity = 75)
+    }
+
+    private val transparentAtmosphere: Color by lazy {
+        Color().r(atmosphereColor.r()).g(atmosphereColor.g()).b(atmosphereColor.b()).a(0.toByte())
+    }
+
+    override fun draw() {
+        renderPosition.x(position.x.toFloat()).y(position.y.toFloat())
+
         drawTrail(trailBaseColor)
 
         if (atmosphere != AtmosphereType.NONE) {
-            val atmosphereColor = atmosphere.colorWithOpacity(opacity = 75)
-            val transparentAtmosphere = Color()
-                .r(atmosphereColor.r())
-                .g(atmosphereColor.g())
-                .b(atmosphereColor.b())
-                .a(0.toByte())
             DrawCircleGradient(
-                screenPosition,
+                renderPosition,
                 radius.value.toFloat() * 1.5f,
                 atmosphereColor,
                 transparentAtmosphere,
             )
         }
 
-        drawSmoothCircle(screenPosition, radius.value.toFloat(), color)
+        drawSmoothCircle(renderPosition, radius.value.toFloat(), color)
     }
 }

@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import engine.BarnesHut
+import engine.barneshut.BarnesHut
 import engine.G
 import kotlin.math.sqrt
 import kotlin.random.Random

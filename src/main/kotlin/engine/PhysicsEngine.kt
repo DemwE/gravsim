@@ -1,5 +1,6 @@
 package engine
 
+import engine.barneshut.BarnesHut
 import spaceObjects.GravityObject
 
 /**

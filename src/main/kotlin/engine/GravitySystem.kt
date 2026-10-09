@@ -2,7 +2,7 @@ package engine
 
 const val G: Double = 6.67430e-20
 const val MAX_PHYSICS_STEP: Double = 600.0
-const val MAX_SUBSTEPS: Int = 2000
+const val MAX_SUBSTEPS: Int = 32
 
 const val AU_KM: Double = 1.496e8
 const val MAP_HALF_AU: Double = 50.0

@@ -15,6 +15,8 @@ abstract class GravityObject(
     open var maxTrailPoints: Int = 800,
     open var trailSegmentKm: Double = 1000.0,
 ) {
+    val renderPosition: Vector2 = Vector2()
+
     abstract fun draw()
 
     open fun updateTrail() = updateTrail(position.x, position.y)
@@ -30,10 +32,12 @@ abstract class GravityObject(
         val dy = y - last.y()
         val threshold = trailSegmentKm
         if (dx * dx + dy * dy >= threshold * threshold) {
-            trailPoints.add(Vector2().x(x.toFloat()).y(y.toFloat()))
-            if (trailPoints.size > maxTrailPoints) {
-                trailPoints.removeFirst()
+            val pt = if (trailPoints.size >= maxTrailPoints) {
+                trailPoints.removeFirst().apply { x(x.toFloat()); y(y.toFloat()) }
+            } else {
+                Vector2().x(x.toFloat()).y(y.toFloat())
             }
+            trailPoints.add(pt)
         }
     }
 
