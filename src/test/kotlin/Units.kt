@@ -10,6 +10,20 @@ class UnitsTest {
         println(distance.format())
         println(distance.convertTo(Kilometer).format())
         println(distance.convertTo(LightYear).format(12))
+        println(distance.convertTo(SolarRadius).format())
+        println(distance.convertTo(EarthRadius).format())
+    }
+
+    @Test
+    fun time() {
+        val year = unit(1.0, Year)
+        val inDays = year.convertTo(Day)
+        val inHours = year.convertTo(Hour)
+        val inSeconds = year.convertTo(Second)
+        println(year.format())
+        println(inDays.format())
+        println(inHours.format())
+        println(inSeconds.format())
     }
 
     @Test

@@ -49,4 +49,12 @@ class FormattersTest {
         assertEquals("100 km", formatDistance(100.0))
         assertTrue(formatDistance(1.496e8).contains("1.000 AU"))
     }
+
+    @Test
+    fun testFormatRadius() {
+        val starRadius = unit(696340.0, Kilometer)
+        val planetRadius = unit(6371.0, Kilometer)
+        assertTrue(formatRadius(starRadius).contains("1.00 R_sun"))
+        assertTrue(formatRadius(planetRadius).contains("1.00 R_earth"))
+    }
 }

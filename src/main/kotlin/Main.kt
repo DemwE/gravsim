@@ -1,6 +1,7 @@
 import com.raylib.Colors.*
 import com.raylib.Raylib.*
 import lib.Seed
+import ui.GuiFont
 import ui.SimulationHud
 import java.time.Instant
 
@@ -96,5 +97,6 @@ fun main() {
         EndDrawing()
     }
 
+    GuiFont.unload()
     CloseWindow()
 }

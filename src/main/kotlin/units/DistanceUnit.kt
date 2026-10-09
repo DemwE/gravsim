@@ -18,10 +18,22 @@
         override val factorToSI: Double = 1000.0
     }
 
+    object EarthRadius : DistanceUnit<EarthRadius> {
+        override val name: String = "Earth Radius"
+        override val symbol: String = "R_earth"
+        override val factorToSI: Double = 6.371e6
+    }
+
+    object SolarRadius : DistanceUnit<SolarRadius> {
+        override val name: String = "Solar Radius"
+        override val symbol: String = "R_sun"
+        override val factorToSI: Double = 6.96340e8
+    }
+
     object AstronomicalUnit : DistanceUnit<AstronomicalUnit> {
         override val name: String = "Astronomical Unit"
         override val symbol: String = "AU"
-        override val factorToSI: Double = 1.496e11
+        override val factorToSI: Double = 1.495978707e11
     }
 
     object LightYear : DistanceUnit<LightYear> {
