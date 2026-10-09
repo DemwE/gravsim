@@ -25,9 +25,8 @@ class SolarSystem(
 
         val random = Random(seed.value)
         val starCount = random.nextInt(1, 3)
-        val astronomicalUnitKm = unit(1.0, AstronomicalUnit).convertTo(Kilometer).value
-        val starGapKm = astronomicalUnitKm
-        val planetGapKm = astronomicalUnitKm * 0.1
+        val starGapKm = unit(1.0, AstronomicalUnit).convertTo(Kilometer).value
+        val planetGapKm = starGapKm * 0.1
         val stars = mutableListOf<Star>()
 
         repeat(starCount) { index ->

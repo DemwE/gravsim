@@ -17,7 +17,7 @@ data class Seed(val value: Long) {
                         val random = SecureRandom.getInstance("SHA1PRNG")
                         random.setSeed(bytes)
                         random.nextLong()
-                    } catch (e: IllegalArgumentException) {
+                    } catch (_: IllegalArgumentException) {
                         seed.hashCode().toLong()
                     }
                 }

@@ -3,6 +3,14 @@ package ui
 import units.*
 import java.util.Locale
 
+private fun formatDayTime(remDaySec: Double): Triple<Long, Long, Long> {
+    val hours = unit(remDaySec, Second).convertTo(Hour).value.toLong()
+    val remHourSec = remDaySec % Hour.factorToSI
+    val mins = unit(remHourSec, Second).convertTo(Minute).value.toLong()
+    val secs = (remHourSec % Minute.factorToSI).toLong()
+    return Triple(hours, mins, secs)
+}
+
 fun formatSimulationTime(totalSeconds: Double): String {
     if (totalSeconds < 0.0 || !totalSeconds.isFinite()) return "00:00:00"
 
@@ -11,21 +19,13 @@ fun formatSimulationTime(totalSeconds: Double): String {
         val years = timeQty.convertTo(Year).value.toLong()
         val remSec = totalSeconds % Year.factorToSI
         val days = unit(remSec, Second).convertTo(Day).value.toLong()
-        val remDaySec = remSec % Day.factorToSI
-        val hours = unit(remDaySec, Second).convertTo(Hour).value.toLong()
-        val remHourSec = remDaySec % Hour.factorToSI
-        val mins = unit(remHourSec, Second).convertTo(Minute).value.toLong()
-        val secs = (remHourSec % Minute.factorToSI).toLong()
+        val (hours, mins, secs) = formatDayTime(remSec % Day.factorToSI)
         return String.format(Locale.US, "%d y %d d %02d:%02d:%02d", years, days, hours, mins, secs)
     }
 
     if (totalSeconds >= Day.factorToSI) {
         val days = timeQty.convertTo(Day).value.toLong()
-        val remDaySec = totalSeconds % Day.factorToSI
-        val hours = unit(remDaySec, Second).convertTo(Hour).value.toLong()
-        val remHourSec = remDaySec % Hour.factorToSI
-        val mins = unit(remHourSec, Second).convertTo(Minute).value.toLong()
-        val secs = (remHourSec % Minute.factorToSI).toLong()
+        val (hours, mins, secs) = formatDayTime(totalSeconds % Day.factorToSI)
         return String.format(Locale.US, "%d d %02d:%02d:%02d", days, hours, mins, secs)
     }
 
