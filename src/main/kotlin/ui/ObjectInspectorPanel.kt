@@ -2,9 +2,7 @@ package ui
 
 import com.raylib.Colors.*
 import com.raylib.Raylib.*
-import spaceObjects.CelestialBody
-import spaceObjects.GravityObject
-import spaceObjects.Star
+import spaceObjects.*
 
 class ObjectInspectorPanel {
     private val panelBg = Color().r(15.toByte()).g(15.toByte()).b(20.toByte()).a(200.toByte())

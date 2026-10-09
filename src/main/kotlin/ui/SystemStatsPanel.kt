@@ -2,13 +2,8 @@ package ui
 
 import com.raylib.Colors.*
 import com.raylib.Raylib.*
-import spaceObjects.CelestialBody
-import spaceObjects.GravityObject
-import spaceObjects.Star
-import units.Kilogram
-import units.SolarMass
-import units.convertTo
-import units.unit
+import spaceObjects.*
+import units.*
 import java.util.Locale
 
 class SystemStatsPanel {

@@ -2,11 +2,8 @@ package ui
 
 import com.raylib.Colors.*
 import com.raylib.Raylib.*
-import spaceObjects.GravityObject
-import spaceObjects.Vec2
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
+import spaceObjects.*
+import kotlin.math.*
 
 class WorldOverlay {
 
