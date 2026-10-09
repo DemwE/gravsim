@@ -1,3 +1,5 @@
+package window
+
 import com.raylib.Raylib.*
 
 private const val WINDOW_TITLE = "N-Body Simulation"

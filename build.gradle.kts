@@ -47,7 +47,21 @@ tasks.jar {
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags("benchmark")
+    }
+}
+
+tasks.register<Test>("benchmark") {
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    useJUnitPlatform {
+        includeTags("benchmark")
+    }
+    testLogging {
+        showStandardStreams = true
+        events("passed", "failed")
+    }
 }
 
 tasks.withType<JavaExec> {

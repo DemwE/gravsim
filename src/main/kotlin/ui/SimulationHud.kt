@@ -2,7 +2,6 @@ package ui
 
 import com.raylib.Raylib.*
 import spaceObjects.GravityObject
-import kotlin.math.sqrt
 
 class SimulationHud(
     val topStatusBar: TopStatusBar = TopStatusBar(),
@@ -28,26 +27,7 @@ class SimulationHud(
     }
 
     fun selectObjectAt(mousePos: Vector2, camera: Camera2D, objects: List<GravityObject>): GravityObject? {
-        var closest: GravityObject? = null
-        var minDistance = Float.MAX_VALUE
-
-        val screenWidth = GetRenderWidth()
-        val logicalWidth = GetScreenWidth()
-        val dpiScale = if (logicalWidth > 0) (screenWidth.toFloat() / logicalWidth.toFloat()).coerceAtLeast(1.0f) else 1.0f
-
-        for (obj in objects) {
-            val screenPos = GetWorldToScreen2D(obj.position.toVector2(), camera)
-            val dx = mousePos.x() - screenPos.x()
-            val dy = mousePos.y() - screenPos.y()
-            val dist = sqrt(dx * dx + dy * dy)
-            val hitRadius = maxOf(25f * dpiScale, (obj.radius.value * camera.zoom()).toFloat())
-
-            if (dist <= hitRadius && dist < minDistance) {
-                minDistance = dist
-                closest = obj
-            }
-        }
-        return closest
+        return ObjectPicker.pickObject(mousePos, camera, objects)
     }
 
     fun drawWorldOverlay(camera: Camera2D, objects: List<GravityObject>, followedObject: GravityObject?) {

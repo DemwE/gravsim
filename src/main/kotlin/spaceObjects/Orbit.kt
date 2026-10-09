@@ -1,5 +1,6 @@
 package spaceObjects
 
+import engine.G
 import kotlin.math.sqrt
 
 fun setCircularOrbit(
