@@ -30,10 +30,18 @@ fun main() {
     while (!WindowShouldClose()) {
         cameraController.update(camera)
 
-        if (IsKeyPressed(KEY_EQUAL) || IsKeyPressed(KEY_KP_ADD)) timeScale *= 2.0
-        if (IsKeyPressed(KEY_MINUS) || IsKeyPressed(KEY_KP_SUBTRACT)) timeScale *= 0.5
-        if (IsKeyPressed(KEY_ZERO) || IsKeyPressed(KEY_KP_0) || IsKeyPressed(KEY_O)) {
-            timeScale = system.suggestedTimeScale
+        val ctrlDown = IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)
+
+        if (ctrlDown) {
+            if (IsKeyPressed(KEY_EQUAL) || IsKeyPressed(KEY_KP_ADD)) hud.scaleUp()
+            if (IsKeyPressed(KEY_MINUS) || IsKeyPressed(KEY_KP_SUBTRACT)) hud.scaleDown()
+            if (IsKeyPressed(KEY_ZERO) || IsKeyPressed(KEY_KP_0) || IsKeyPressed(KEY_O)) hud.scaleReset()
+        } else {
+            if (IsKeyPressed(KEY_EQUAL) || IsKeyPressed(KEY_KP_ADD)) timeScale *= 2.0
+            if (IsKeyPressed(KEY_MINUS) || IsKeyPressed(KEY_KP_SUBTRACT)) timeScale *= 0.5
+            if (IsKeyPressed(KEY_ZERO) || IsKeyPressed(KEY_KP_0) || IsKeyPressed(KEY_O)) {
+                timeScale = system.suggestedTimeScale
+            }
         }
         if (IsKeyPressed(KEY_SPACE)) paused = !paused
 

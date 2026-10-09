@@ -1,26 +1,7 @@
 package ui
 
-import units.AstronomicalUnit
-import units.Day
-import units.EarthMass
-import units.EarthRadius
-import units.Hour
-import units.Kilogram
-import units.Kilometer
-import units.Minute
-import units.Quantity
-import units.Second
-import units.SolarMass
-import units.SolarRadius
-import units.Year
-import units.convertTo
-import units.unit
+import units.*
 import java.util.Locale
-
-const val SECONDS_PER_MINUTE = 60.0
-const val SECONDS_PER_HOUR = 3600.0
-const val SECONDS_PER_DAY = 86400.0
-const val SECONDS_PER_YEAR = 365.25 * SECONDS_PER_DAY
 
 fun formatSimulationTime(totalSeconds: Double): String {
     if (totalSeconds < 0.0 || !totalSeconds.isFinite()) return "00:00:00"
@@ -94,11 +75,11 @@ fun formatMass(mass: Quantity<Kilogram>): String {
     return when {
         kg >= 1.0e29 -> {
             val sm = mass.convertTo(SolarMass).value
-            String.format(Locale.US, "%.3f M_sun (%.2e kg)", sm, kg)
+            String.format(Locale.US, "%.3f %s (%.2e kg)", sm, SolarMass.symbol, kg)
         }
         kg >= 1.0e23 -> {
             val em = mass.convertTo(EarthMass).value
-            String.format(Locale.US, "%.3f M_earth (%.2e kg)", em, kg)
+            String.format(Locale.US, "%.3f %s (%.2e kg)", em, EarthMass.symbol, kg)
         }
         else -> {
             String.format(Locale.US, "%.2e kg", kg)
@@ -111,11 +92,11 @@ fun formatRadius(radius: Quantity<Kilometer>): String {
     return when {
         km >= 100000.0 -> {
             val sr = radius.convertTo(SolarRadius).value
-            String.format(Locale.US, "%,.0f km (%.2f R_sun)", km, sr)
+            String.format(Locale.US, "%,.0f km (%.2f %s)", km, sr, SolarRadius.symbol)
         }
         else -> {
             val er = radius.convertTo(EarthRadius).value
-            String.format(Locale.US, "%,.0f km (%.2f R_earth)", km, er)
+            String.format(Locale.US, "%,.0f km (%.2f %s)", km, er, EarthRadius.symbol)
         }
     }
 }

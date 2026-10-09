@@ -24,34 +24,14 @@ object GuiFont {
                     }
                 }
                 tempFontFile = tempFile
-                val loaded = LoadFontEx(tempFile.absolutePath, 32, null as IntArray?, 0)
+                val loaded = LoadFontEx(tempFile.absolutePath, 48, null as IntArray?, 0)
                 if (loaded.texture().id() != 0) {
                     SetTextureFilter(loaded.texture(), TEXTURE_FILTER_BILINEAR)
                     customFont = loaded
-                    return
-                }
-            }
-
-            val fallbackPaths = listOf(
-                "C:\\Windows\\Fonts\\segoeui.ttf",
-                "C:\\Windows\\Fonts\\arial.ttf",
-                "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-                "/usr/share/fonts/TTF/DejaVuSans.ttf"
-            )
-
-            for (path in fallbackPaths) {
-                val file = File(path)
-                if (file.exists()) {
-                    val loaded = LoadFontEx(file.absolutePath, 32, null as IntArray?, 0)
-                    if (loaded.texture().id() != 0) {
-                        SetTextureFilter(loaded.texture(), TEXTURE_FILTER_BILINEAR)
-                        customFont = loaded
-                        return
-                    }
                 }
             }
         } catch (_: Exception) {
-            // Fallback to default Raylib font
+            // Keep default font if loading fails
         }
     }
 

@@ -20,13 +20,13 @@
 
     object EarthRadius : DistanceUnit<EarthRadius> {
         override val name: String = "Earth Radius"
-        override val symbol: String = "R_earth"
+        override val symbol: String = "R_Earth"
         override val factorToSI: Double = 6.371e6
     }
 
     object SolarRadius : DistanceUnit<SolarRadius> {
         override val name: String = "Solar Radius"
-        override val symbol: String = "R_sun"
+        override val symbol: String = "R_Sun"
         override val factorToSI: Double = 6.96340e8
     }
 

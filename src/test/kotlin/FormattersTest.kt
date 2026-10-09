@@ -40,8 +40,8 @@ class FormattersTest {
         val sunMass = unit(1.0, SolarMass).convertTo(Kilogram)
         val earthMass = unit(1.0, EarthMass).convertTo(Kilogram)
 
-        assertTrue(formatMass(sunMass).contains("1.000 M_sun"))
-        assertTrue(formatMass(earthMass).contains("1.000 M_earth"))
+        assertTrue(formatMass(sunMass).contains("1.000 M_Sun"))
+        assertTrue(formatMass(earthMass).contains("1.000 M_Earth"))
     }
 
     @Test
@@ -54,7 +54,7 @@ class FormattersTest {
     fun testFormatRadius() {
         val starRadius = unit(696340.0, Kilometer)
         val planetRadius = unit(6371.0, Kilometer)
-        assertTrue(formatRadius(starRadius).contains("1.00 R_sun"))
-        assertTrue(formatRadius(planetRadius).contains("1.00 R_earth"))
+        assertTrue(formatRadius(starRadius).contains("1.00 R_Sun"))
+        assertTrue(formatRadius(planetRadius).contains("1.00 R_Earth"))
     }
 }
