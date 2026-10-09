@@ -63,26 +63,18 @@ abstract class GravityObject(
         val g = baseColor.g()
         val b = baseColor.b()
 
-        var drew = false
-        val bands = 4
+        val segments = total - 1
+        val bands = minOf(16, segments)
         for (band in 0 until bands) {
-            var start = total * band / bands
-            var end = if (band == bands - 1) total else total * (band + 1) / bands
-            if (band == bands - 1 && end - start < 2) {
-                start = (total - 2).coerceAtLeast(0)
-            }
-            if (end - start < 2) continue
-            drew = true
+            val startSeg = segments * band / bands
+            val endSeg = if (band == bands - 1) segments else segments * (band + 1) / bands
+            val count = endSeg - startSeg + 1
 
-            val progress = (end - 1).toFloat() / total
+            val progress = endSeg.toFloat() / segments
             val alpha = (progress * baseAlpha).toInt().coerceIn(0, 255)
             val segmentColor = Color().r(r).g(g).b(b).a(alpha.toByte())
 
-            DrawLineStrip(strip.position(start.toLong()), end - start, segmentColor)
-        }
-
-        if (!drew) {
-            DrawLineStrip(strip, total, Color().r(r).g(g).b(b).a(baseAlpha.toByte()))
+            DrawLineStrip(strip.position(startSeg.toLong()), count, segmentColor)
         }
     }
 
