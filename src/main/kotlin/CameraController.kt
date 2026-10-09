@@ -6,7 +6,7 @@ class CameraController {
     var followedObject: GravityObject? = null
 
     fun update(camera: Camera2D) {
-        camera.offset(Vector2().x(GetScreenWidth() / 2f).y(GetScreenHeight() / 2f))
+        camera.offset(Vector2().x(GetRenderWidth() / 2f).y(GetRenderHeight() / 2f))
 
         val wheelMove = GetMouseWheelMove()
         if (wheelMove != 0f) {

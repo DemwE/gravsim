@@ -31,12 +31,16 @@ class SimulationHud(
         var closest: GravityObject? = null
         var minDistance = Float.MAX_VALUE
 
+        val screenWidth = GetRenderWidth()
+        val logicalWidth = GetScreenWidth()
+        val dpiScale = if (logicalWidth > 0) (screenWidth.toFloat() / logicalWidth.toFloat()).coerceAtLeast(1.0f) else 1.0f
+
         for (obj in objects) {
             val screenPos = GetWorldToScreen2D(obj.position.toVector2(), camera)
             val dx = mousePos.x() - screenPos.x()
             val dy = mousePos.y() - screenPos.y()
             val dist = sqrt(dx * dx + dy * dy)
-            val hitRadius = maxOf(25f, (obj.radius.value * camera.zoom()).toFloat())
+            val hitRadius = maxOf(25f * dpiScale, (obj.radius.value * camera.zoom()).toFloat())
 
             if (dist <= hitRadius && dist < minDistance) {
                 minDistance = dist
@@ -47,7 +51,10 @@ class SimulationHud(
     }
 
     fun drawWorldOverlay(camera: Camera2D, objects: List<GravityObject>, followedObject: GravityObject?) {
-        worldOverlay.draw(camera, objects, selectedObject, followedObject, showOverlay)
+        val screenWidth = GetRenderWidth()
+        val logicalWidth = GetScreenWidth()
+        val dpiScale = if (logicalWidth > 0) (screenWidth.toFloat() / logicalWidth.toFloat()).coerceAtLeast(1.0f) else 1.0f
+        worldOverlay.draw(camera, objects, selectedObject, followedObject, showOverlay, scale * dpiScale)
     }
 
     fun drawScreenHud(
@@ -58,12 +65,15 @@ class SimulationHud(
         followedObject: GravityObject?,
         systemName: String = "System",
     ) {
-        val screenWidth = GetScreenWidth()
-        val screenHeight = GetScreenHeight()
+        val screenWidth = GetRenderWidth()
+        val screenHeight = GetRenderHeight()
+        val logicalWidth = GetScreenWidth()
+        val dpiScale = if (logicalWidth > 0) (screenWidth.toFloat() / logicalWidth.toFloat()).coerceAtLeast(1.0f) else 1.0f
+        val effectiveScale = scale * dpiScale
 
-        topStatusBar.draw(timeScale, simulatedTime, paused, scale)
-        systemStatsPanel.draw(screenWidth, objects, showOverlay, systemName, scale)
-        objectInspectorPanel.draw(screenHeight, selectedObject, followedObject, scale)
-        controlsHelpBar.draw(screenWidth, screenHeight, scale)
+        topStatusBar.draw(timeScale, simulatedTime, paused, effectiveScale)
+        systemStatsPanel.draw(screenWidth, objects, showOverlay, systemName, effectiveScale)
+        objectInspectorPanel.draw(screenHeight, selectedObject, followedObject, effectiveScale)
+        controlsHelpBar.draw(screenWidth, screenHeight, effectiveScale)
     }
 }
