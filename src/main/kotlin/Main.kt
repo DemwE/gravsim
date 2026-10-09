@@ -15,7 +15,7 @@ fun main() {
     val camera = Camera2D()
         .offset(Vector2().x(GetScreenWidth() / 2f).y(GetScreenHeight() / 2f))
         .target(Vector2())
-        .zoom(0.001f)
+        .zoom(0.00001f)
     val cameraController = CameraController()
 
     var system = SolarSystem("System", Seed(Instant.now().toEpochMilli()))

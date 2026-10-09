@@ -1,57 +1,63 @@
 package spaceObjects
 
 import com.raylib.Raylib.*
-import units.*
+import units.Kilogram
+import units.Kilometer
+import units.Quantity
 
-interface GravityObject {
-    val name: String
-    var mass: Quantity<Kilogram>
-    var radius: Quantity<Kilometer>
-    var position: Vec2
-    var velocity: Vec2
-
-    // Historia pozycji. Trzymamy Vector2 (Float) — to dane wyłącznie do rysowania.
-    val trailPoints: MutableList<Vector2>
-    var maxTrailPoints: Int
-
-    // Minimalny dystans (km) między kolejnymi próbkami śladu.
-    var trailSegmentKm: Double
-
-    fun draw()
+abstract class GravityObject(
+    open val name: String,
+    open var mass: Quantity<Kilogram>,
+    open var radius: Quantity<Kilometer>,
+    open var position: Vec2 = Vec2(),
+    open var velocity: Vec2 = Vec2(),
+    open val trailPoints: MutableList<Vector2> = mutableListOf(),
+    open var maxTrailPoints: Int = 800,
+    open var trailSegmentKm: Double = 1000.0,
+) {
+    abstract fun draw()
 
     /**
-     * Dodaje bieżącą pozycję do śladu, o ile obiekt przesunął się o [trailSegmentKm].
-     * Próbkowanie po dystansie, a nie po klatce, uniezależnia ślad od FPS i prędkości symulacji.
+     * Dodaje pozycję do śladu, gdy obiekt pokona dystans [trailSegmentKm].
+     * Zapewnia to stałą gęstość punktów śladu niezależnie od liczby FPS.
      */
-    fun updateTrail() {
-        val threshold = trailSegmentKm
-        if (trailPoints.isNotEmpty()) {
-            val last = trailPoints.last()
-            val dx = position.x - last.x()
-            val dy = position.y - last.y()
-            if (dx * dx + dy * dy < threshold * threshold) return
+    open fun updateTrail() {
+        val currentVec = position.toVector2()
+        if (trailPoints.isEmpty()) {
+            trailPoints.add(currentVec)
+            return
         }
 
-        trailPoints.add(position.toVector2())
-
-        if (trailPoints.size > maxTrailPoints) {
-            trailPoints.removeAt(0)
+        val last = trailPoints.last()
+        val dx = position.x - last.x()
+        val dy = position.y - last.y()
+        val threshold = trailSegmentKm
+        if (dx * dx + dy * dy >= threshold * threshold) {
+            trailPoints.add(currentVec)
+            if (trailPoints.size > maxTrailPoints) {
+                trailPoints.removeAt(0)
+            }
         }
     }
 
     /**
-     * Rysuje ślad z płynnym zanikaniem (alpha rośnie w stronę najnowszego odcinka).
+     * Rysuje ślad z płynnym zanikaniem.
+     * Łączy punkty z historii oraz bieżącą pozycję obiektu, dzięki czemu ślad
+     * zawsze sięga dokładnie do środka obiektu bez opóźnień i przerw.
      */
-    fun drawTrail(baseColor: Color) {
-        val count = trailPoints.size
-        if (count < 2) return
+    open fun drawTrail(baseColor: Color) {
+        if (trailPoints.isEmpty()) return
 
-        for (i in 0 until count - 1) {
+        val currentPos = position.toVector2()
+        val totalSegments = trailPoints.size
+        val baseAlpha = baseColor.a().toInt() and 0xFF
+
+        for (i in 0 until totalSegments) {
             val p1 = trailPoints[i]
-            val p2 = trailPoints[i + 1]
+            val p2 = if (i + 1 < trailPoints.size) trailPoints[i + 1] else currentPos
 
-            val alphaProgress = ((i + 1).toFloat() / (count - 1))
-            val alpha = (alphaProgress * 255).toInt().coerceIn(0, 255)
+            val alphaProgress = (i + 1).toFloat() / totalSegments
+            val alpha = (alphaProgress * baseAlpha).toInt().coerceIn(0, 255)
 
             val segmentColor = Color()
                 .r(baseColor.r())

@@ -1,5 +1,6 @@
 package bodyTypes
 
+import com.raylib.Raylib.Color
 import lib.Range
 import units.EarthMass
 import units.Kilometer
@@ -11,8 +12,9 @@ enum class CelestialBodyType(
     val radiusRange: Range<Kilometer>,
     val atmosphere: List<AtmosphereType>,
     val weight: Float,
+    val color: Color,
 ) {
-    // Planets types are based on: https://elite-dangerous.fandom.com/wiki/Planets
+    // Planet types are based on: https://elite-dangerous.fandom.com/wiki/Planets
     // TERRESTRIAL PLANETS
 
     // Very Common (~30% all planet spawns)
@@ -25,7 +27,8 @@ enum class CelestialBodyType(
             AtmosphereType.METHANE, AtmosphereType.SULFUR_DIOXIDE, AtmosphereType.NEON_RICH,
             AtmosphereType.ARGON, AtmosphereType.ARGON_RICH
         ),
-        weight = 45.0f
+        weight = 45.0f,
+        color = color(180, 205, 230),
     ),
 
     // Very Common
@@ -38,7 +41,8 @@ enum class CelestialBodyType(
             AtmosphereType.SULFUR_DIOXIDE, AtmosphereType.METHANE, AtmosphereType.AMMONIA,
             AtmosphereType.ARGON, AtmosphereType.NITROGEN, AtmosphereType.WATER, AtmosphereType.OXYGEN
         ),
-        weight = 40.0f
+        weight = 40.0f,
+        color = color(135, 125, 115),
     ),
 
     // Common
@@ -50,7 +54,8 @@ enum class CelestialBodyType(
             AtmosphereType.NONE, AtmosphereType.METHANE, AtmosphereType.NEON_RICH,
             AtmosphereType.ARGON_RICH, AtmosphereType.NITROGEN, AtmosphereType.OXYGEN
         ),
-        weight = 20.0f
+        weight = 20.0f,
+        color = color(145, 175, 190),
     ),
 
     // Common
@@ -63,7 +68,8 @@ enum class CelestialBodyType(
             AtmosphereType.SULFUR_DIOXIDE, AtmosphereType.AMMONIA, AtmosphereType.NITROGEN,
             AtmosphereType.OXYGEN, AtmosphereType.METHANE, AtmosphereType.ARGON
         ),
-        weight = 25.0f
+        weight = 25.0f,
+        color = color(130, 145, 155),
     ),
 
     // Uncommon
@@ -75,7 +81,8 @@ enum class CelestialBodyType(
             AtmosphereType.NONE, AtmosphereType.SILICATE_VAPOUR, AtmosphereType.CARBON_DIOXIDE,
             AtmosphereType.SULFUR_DIOXIDE
         ),
-        weight = 5.0f
+        weight = 5.0f,
+        color = color(165, 135, 100),
     ),
 
     // Uncommon
@@ -87,7 +94,8 @@ enum class CelestialBodyType(
             AtmosphereType.WATER, AtmosphereType.CARBON_DIOXIDE, AtmosphereType.NITROGEN,
             AtmosphereType.ARGON_RICH
         ),
-        weight = 4.0f
+        weight = 4.0f,
+        color = color(55, 115, 190),
     ),
 
     // Rare
@@ -98,7 +106,8 @@ enum class CelestialBodyType(
         atmosphere = listOf(
             AtmosphereType.AMMONIA, AtmosphereType.CARBON_DIOXIDE
         ),
-        weight = 0.8f
+        weight = 0.8f,
+        color = color(150, 180, 110),
     ),
 
     // Rare
@@ -109,7 +118,8 @@ enum class CelestialBodyType(
         atmosphere = listOf(
             AtmosphereType.OXYGEN, AtmosphereType.NITROGEN
         ),
-        weight = 0.5f
+        weight = 0.5f,
+        color = color(80, 150, 90),
     ),
 
     // GAS GIANTS
@@ -120,7 +130,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(10.0, EarthMass), unit(1000.0, EarthMass)),
         radiusRange = Range(unit(25000.0, Kilometer), unit(80000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.HELIUM, AtmosphereType.AMMONIA, AtmosphereType.METHANE),
-        weight = 15.0f
+        weight = 15.0f,
+        color = color(185, 125, 75),
     ),
 
     // Uncommon
@@ -129,7 +140,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(20.0, EarthMass), unit(1200.0, EarthMass)),
         radiusRange = Range(unit(30000.0, Kilometer), unit(85000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.WATER, AtmosphereType.HELIUM),
-        weight = 7.0f
+        weight = 7.0f,
+        color = color(205, 150, 95),
     ),
 
     // Common
@@ -138,7 +150,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(30.0, EarthMass), unit(1500.0, EarthMass)),
         radiusRange = Range(unit(35000.0, Kilometer), unit(90000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.HELIUM),
-        weight = 12.0f
+        weight = 12.0f,
+        color = color(210, 175, 115),
     ),
 
     // Rare (in standard systems)
@@ -147,7 +160,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(50.0, EarthMass), unit(2000.0, EarthMass)),
         radiusRange = Range(unit(40000.0, Kilometer), unit(95000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.HELIUM, AtmosphereType.SILICATE_VAPOUR),
-        weight = 1.0f
+        weight = 1.0f,
+        color = color(190, 115, 95),
     ),
 
     // Rare (in standard systems)
@@ -156,7 +170,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(50.0, EarthMass), unit(2500.0, EarthMass)),
         radiusRange = Range(unit(45000.0, Kilometer), unit(100000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.SILICATE_VAPOUR),
-        weight = 0.6f
+        weight = 0.6f,
+        color = color(115, 145, 200),
     ),
 
     // Uncommon
@@ -165,7 +180,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(10.0, EarthMass), unit(800.0, EarthMass)),
         radiusRange = Range(unit(25000.0, Kilometer), unit(75000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.AMMONIA, AtmosphereType.OXYGEN),
-        weight = 3.5f
+        weight = 3.5f,
+        color = color(145, 175, 95),
     ),
 
     // Uncommon
@@ -174,7 +190,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(10.0, EarthMass), unit(800.0, EarthMass)),
         radiusRange = Range(unit(25000.0, Kilometer), unit(75000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.WATER, AtmosphereType.OXYGEN),
-        weight = 3.5f
+        weight = 3.5f,
+        color = color(70, 145, 185),
     ),
 
     // Rare
@@ -183,7 +200,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(5.0, EarthMass), unit(200.0, EarthMass)),
         radiusRange = Range(unit(15000.0, Kilometer), unit(50000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.WATER, AtmosphereType.CARBON_DIOXIDE_RICH),
-        weight = 1.0f
+        weight = 1.0f,
+        color = color(55, 125, 220),
     ),
 
     // Very Rare
@@ -192,7 +210,8 @@ enum class CelestialBodyType(
         massRange = Range(unit(20.0, EarthMass), unit(1000.0, EarthMass)),
         radiusRange = Range(unit(30000.0, Kilometer), unit(80000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.HELIUM),
-        weight = 0.2f
+        weight = 0.2f,
+        color = color(220, 195, 135),
     ),
 
     // Extremely Rare
@@ -201,6 +220,7 @@ enum class CelestialBodyType(
         massRange = Range(unit(10.0, EarthMass), unit(500.0, EarthMass)),
         radiusRange = Range(unit(20000.0, Kilometer), unit(60000.0, Kilometer)),
         atmosphere = listOf(AtmosphereType.HELIUM),
-        weight = 0.02f
+        weight = 0.02f,
+        color = color(235, 215, 165),
     ),
 }

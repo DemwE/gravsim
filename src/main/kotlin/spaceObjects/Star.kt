@@ -1,6 +1,5 @@
 package spaceObjects
 
-import bodyTypes.StarColors
 import bodyTypes.StarType
 import com.raylib.Raylib.*
 import units.Kelvin
@@ -8,26 +7,38 @@ import units.Kilogram
 import units.Kilometer
 import units.Quantity
 
-data class Star(
-    override val name: String,
+class Star(
+    name: String,
     val type: StarType,
-    override var mass: Quantity<Kilogram>,
-    override var radius: Quantity<Kilometer>,
+    mass: Quantity<Kilogram>,
+    radius: Quantity<Kilometer>,
     val temperature: Quantity<Kelvin>,
-    override var velocity: Vec2 = Vec2(),
-    override var position: Vec2 = Vec2(),
-    override val trailPoints: MutableList<Vector2> = mutableListOf(),
-    override var maxTrailPoints: Int = 800,
-    override var trailSegmentKm: Double = 1000.0
-) : GravityObject {
-    fun starGlow(color: Color): Pair<Color, Color> {
-        val glowColorInner: Color = Color()
+    position: Vec2 = Vec2(),
+    velocity: Vec2 = Vec2(),
+    trailPoints: MutableList<Vector2> = mutableListOf(),
+    maxTrailPoints: Int = 800,
+    trailSegmentKm: Double = 1000.0,
+) : GravityObject(
+    name = name,
+    mass = mass,
+    radius = radius,
+    position = position,
+    velocity = velocity,
+    trailPoints = trailPoints,
+    maxTrailPoints = maxTrailPoints,
+    trailSegmentKm = trailSegmentKm,
+) {
+    val color: Color
+        get() = type.color
+
+    private fun starGlow(color: Color): Pair<Color, Color> {
+        val glowColorInner = Color()
             .r(color.r())
             .g(color.g())
             .b(color.b())
             .a(120.toByte())
 
-        val glowColorOuter: Color = Color()
+        val glowColorOuter = Color()
             .r(color.r())
             .g(color.g())
             .b(color.b())
@@ -38,14 +49,14 @@ data class Star(
 
     override fun draw() {
         val screenPosition = position.toVector2()
-        val color = StarColors.star(type)
-        val (glowColorInner, glowColorOuter) = starGlow(color)
+        val starColor = color
+        val (glowColorInner, glowColorOuter) = starGlow(starColor)
 
         // 1. Ślad trajektorii gwiazdy (pod poświatą)
         val trailBaseColor = Color()
-            .r(color.r())
-            .g(color.g())
-            .b(color.b())
+            .r(starColor.r())
+            .g(starColor.g())
+            .b(starColor.b())
             .a(180.toByte())
         drawTrail(trailBaseColor)
 
@@ -55,10 +66,10 @@ data class Star(
             screenPosition,
             glowRadius,
             glowColorInner,
-            glowColorOuter
+            glowColorOuter,
         )
 
         // 3. Rdzeń
-        drawSmoothCircle(screenPosition, radius.value.toFloat(), color)
+        drawSmoothCircle(screenPosition, radius.value.toFloat(), starColor)
     }
 }
