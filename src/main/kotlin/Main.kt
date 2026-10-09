@@ -5,8 +5,8 @@ import ui.GuiFont
 import ui.SimulationHud
 import java.time.Instant
 
-private const val TARGET_FPS = 120
-private const val DEFAULT_PLANETS = 200
+private const val TARGET_FPS = 60
+private const val DEFAULT_PLANETS = 30
 private const val MAX_FRAME_TIME = 0.05f
 
 fun main() {

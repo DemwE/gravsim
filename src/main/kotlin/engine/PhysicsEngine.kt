@@ -1,29 +1,33 @@
-package spaceObjects
+package engine
 
-import java.util.Arrays
+import spaceObjects.GravityObject
+import spaceObjects.Vec2
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.abs
 import kotlin.math.cbrt
-import kotlin.math.sqrt
 import units.Kilogram
 import units.Kilometer
 import units.Quantity
 
-private const val PARALLEL_MIN_BODIES = 64
-
 /**
- * Structure-of-Arrays N-body engine.
+ * Single-algorithm (Barnes–Hut) N-body engine.
  *
  * Physical state lives in flat [DoubleArray]s; [bodies] is the parallel source list used for
  * rendering and identity. INVARIANT: [bodies] and the internal arrays are always kept in sync
- * by [rebuild] (full resync) and by the engine's own collision handling. Never
+ * by [rebuild] (full resync) and by the engine's own collision/escape handling. Never
  * add/remove/reorder [bodies] directly after construction — do it through [rebuild] — or the
  * array/list mapping will desync.
+ *
+ * Bodies that leave the fixed `[-MAP_HALF_KM, MAP_HALF_KM]^2` map are removed from the
+ * simulation by [step]. Gravity is approximated with [theta] (Barnes–Hut monopole threshold),
+ * so Newton's third law is not enforced exactly; momentum drifts slightly on large systems.
  */
 class PhysicsEngine(
     val bodies: MutableList<GravityObject>,
     initialCapacity: Int = bodies.size,
+    private val theta: Double = BARNES_HUT_THETA,
     threads: Int = Runtime.getRuntime().availableProcessors(),
 ) {
     private val threadCount = threads.coerceAtLeast(1)
@@ -37,8 +41,7 @@ class PhysicsEngine(
     private var accX = DoubleArray(capacity)
     private var accY = DoubleArray(capacity)
 
-    private var partialAccX = arrayOf<DoubleArray>()
-    private var partialAccY = arrayOf<DoubleArray>()
+    private val barnesHut = BarnesHut()
 
     private var pool: ExecutorService? = null
 
@@ -77,71 +80,22 @@ class PhysicsEngine(
         capacity = newCapacity
     }
 
-    private fun ensurePartialBuffers() {
-        if (partialAccX.size != threadCount) {
-            partialAccX = Array(threadCount) { DoubleArray(capacity) }
-            partialAccY = Array(threadCount) { DoubleArray(capacity) }
-            return
-        }
-        if (partialAccX[0].size < capacity) {
-            for (t in 0 until threadCount) {
-                partialAccX[t] = partialAccX[t].copyOf(capacity)
-                partialAccY[t] = partialAccY[t].copyOf(capacity)
-            }
-        }
-    }
-
     fun step(dt: Double) {
         if (count == 0 || dt <= 0.0) return
 
-        if (threadCount <= 1 || count < PARALLEL_MIN_BODIES) {
-            Arrays.fill(accX, 0, count, 0.0)
-            Arrays.fill(accY, 0, count, 0.0)
-            accumulateRange(accX, accY, 0, count)
+        barnesHut.build(posX, posY, mass, radius, count)
+
+        if (threadCount <= 1 || count < BARNES_HUT_PARALLEL_MIN_BODIES) {
+            barnesHut.computeRange(posX, posY, mass, radius, accX, accY, 0, count, theta)
         } else {
-            parallelAccumulate()
+            parallelTraverse()
         }
 
         integrate(dt)
+        removeEscaped()
     }
 
-    private fun accumulateRange(ax: DoubleArray, ay: DoubleArray, start: Int, end: Int) {
-        val px = posX
-        val py = posY
-        val m = mass
-        val r = radius
-        val n = count
-
-        for (i in start until end) {
-            val xi = px[i]
-            val yi = py[i]
-            val ri = r[i]
-            val mi = m[i]
-
-            for (j in i + 1 until n) {
-                val dx = px[j] - xi
-                val dy = py[j] - yi
-
-                val softening = ri + r[j]
-                val distSq = dx * dx + dy * dy + softening * softening
-                val invDist = 1.0 / sqrt(distSq)
-                val invDist3 = invDist * invDist * invDist
-
-                val force = G * invDist3
-                val fA = force * m[j]
-                val fB = force * mi
-
-                ax[i] += dx * fA
-                ay[i] += dy * fA
-                ax[j] -= dx * fB
-                ay[j] -= dy * fB
-            }
-        }
-    }
-
-    private fun parallelAccumulate() {
-        ensurePartialBuffers()
-
+    private fun parallelTraverse() {
         val usedThreads = minOf(threadCount, count)
         val block = (count + usedThreads - 1) / usedThreads
 
@@ -149,34 +103,15 @@ class PhysicsEngine(
         for (t in 0 until usedThreads - 1) {
             val start = t * block
             val end = minOf(start + block, count)
-            val ax = partialAccX[t]
-            val ay = partialAccY[t]
             tasks += Callable {
-                Arrays.fill(ax, 0, count, 0.0)
-                Arrays.fill(ay, 0, count, 0.0)
-                accumulateRange(ax, ay, start, end)
+                barnesHut.computeRange(posX, posY, mass, radius, accX, accY, start, end, theta)
             }
         }
 
-        val inlineIndex = usedThreads - 1
-        val inlineAx = partialAccX[inlineIndex]
-        val inlineAy = partialAccY[inlineIndex]
-        Arrays.fill(inlineAx, 0, count, 0.0)
-        Arrays.fill(inlineAy, 0, count, 0.0)
-        accumulateRange(inlineAx, inlineAy, inlineIndex * block, count)
+        val inlineStart = minOf((usedThreads - 1) * block, count)
+        barnesHut.computeRange(posX, posY, mass, radius, accX, accY, inlineStart, count, theta)
 
         pool().invokeAll(tasks)
-
-        System.arraycopy(partialAccX[0], 0, accX, 0, count)
-        System.arraycopy(partialAccY[0], 0, accY, 0, count)
-        for (t in 1 until usedThreads) {
-            val pax = partialAccX[t]
-            val pay = partialAccY[t]
-            for (i in 0 until count) {
-                accX[i] += pax[i]
-                accY[i] += pay[i]
-            }
-        }
     }
 
     private fun pool(): ExecutorService {
@@ -203,6 +138,17 @@ class PhysicsEngine(
             vy[i] = newVy
             px[i] += newVx * dt
             py[i] += newVy * dt
+        }
+    }
+
+    private fun removeEscaped() {
+        var i = 0
+        while (i < count) {
+            if (abs(posX[i]) > MAP_HALF_KM || abs(posY[i]) > MAP_HALF_KM) {
+                removeAt(i)
+            } else {
+                i++
+            }
         }
     }
 

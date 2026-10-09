@@ -1,4 +1,8 @@
 import bodyTypes.*
+import engine.G
+import engine.MAX_PHYSICS_STEP
+import engine.MAX_SUBSTEPS
+import engine.PhysicsEngine
 import lib.*
 import spaceObjects.*
 import kotlin.math.*
@@ -49,6 +53,7 @@ class SolarSystem(
             )
         }
 
+        var binarySeparation = 0.0
         if (stars.size == 1) {
             stars[0].position = Vec2()
             stars[0].velocity = Vec2()
@@ -59,6 +64,7 @@ class SolarSystem(
 
             val minimumSeparation = stars.sumOf { it.radius.value } * 3.0
             val separation = maxOf(starGapKm, minimumSeparation)
+            binarySeparation = separation
 
             stars[0].position = Vec2(-separation * (m2 / totalMass), 0.0)
             stars[1].position = Vec2(separation * (m1 / totalMass), 0.0)
@@ -70,6 +76,12 @@ class SolarSystem(
         val totalStarsMass = stars.sumOf { it.mass.value }
 
         val outermostStar = stars.maxOf { abs(it.position.x) + it.radius.value }
+        val minimumPlanetDistance = if (starCount > 1) {
+            binarySeparation * 2.5
+        } else {
+            outermostStar + planetGapKm
+        }
+
         var previousPlanetRadius = 0.0
         var orbitRadius = 0.0
         var innerOrbitRadius = 0.0
@@ -81,7 +93,7 @@ class SolarSystem(
             val radius = random.nextDouble(type.radiusRange.min.value, type.radiusRange.max.value)
 
             orbitRadius = if (index == 0) {
-                outermostStar + radius + planetGapKm
+                minimumPlanetDistance + radius
             } else {
                 orbitRadius + previousPlanetRadius + radius + planetGapKm
             }
