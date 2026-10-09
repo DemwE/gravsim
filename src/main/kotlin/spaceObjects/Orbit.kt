@@ -2,10 +2,6 @@ package spaceObjects
 
 import kotlin.math.sqrt
 
-/**
- * Nadaje satelicie prędkość kołową wokół środka masy podanych ciał ([centers] — jedno lub więcej).
- * Uwzględnia prędkość barycentrum (np. przy układzie podwójnym).
- */
 fun setCircularOrbit(
     satellite: GravityObject,
     centers: List<GravityObject>,
@@ -36,9 +32,6 @@ fun setCircularOrbit(
     )
 }
 
-/**
- * Nadaje dwóm gwiazdom prędkości orbitalne wokół ich wspólnego środka masy.
- */
 fun setBinaryStarOrbit(star1: GravityObject, star2: GravityObject) {
     val dx = star2.position.x - star1.position.x
     val dy = star2.position.y - star1.position.y

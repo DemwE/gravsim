@@ -40,7 +40,6 @@ class CelestialBody(
     override fun draw() {
         val screenPosition = position.toVector2()
 
-        // 1. Ślad orbity pod planetą
         val trailBaseColor = Color()
             .r(color.r())
             .g(color.g())
@@ -48,7 +47,6 @@ class CelestialBody(
             .a(200.toByte())
         drawTrail(trailBaseColor)
 
-        // 2. Atmosfera
         if (atmosphere != AtmosphereType.NONE) {
             val atmosphereColor = atmosphere.colorWithOpacity(opacity = 75)
             val transparentAtmosphere = Color()
@@ -64,7 +62,6 @@ class CelestialBody(
             )
         }
 
-        // 3. Sama planeta
         drawSmoothCircle(screenPosition, radius.value.toFloat(), color)
     }
 }

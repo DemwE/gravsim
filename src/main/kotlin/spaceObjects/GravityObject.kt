@@ -17,10 +17,6 @@ abstract class GravityObject(
 ) {
     abstract fun draw()
 
-    /**
-     * Dodaje pozycję do śladu, gdy obiekt pokona dystans [trailSegmentKm].
-     * Zapewnia to stałą gęstość punktów śladu niezależnie od liczby FPS.
-     */
     open fun updateTrail() {
         val currentVec = position.toVector2()
         if (trailPoints.isEmpty()) {
@@ -40,11 +36,6 @@ abstract class GravityObject(
         }
     }
 
-    /**
-     * Rysuje ślad z płynnym zanikaniem.
-     * Łączy punkty z historii oraz bieżącą pozycję obiektu, dzięki czemu ślad
-     * zawsze sięga dokładnie do środka obiektu bez opóźnień i przerw.
-     */
     open fun drawTrail(baseColor: Color) {
         if (trailPoints.isEmpty()) return
 
@@ -68,8 +59,8 @@ abstract class GravityObject(
             DrawLineV(p1, p2, segmentColor)
         }
     }
-}
 
-internal fun drawSmoothCircle(position: Vector2, radius: Float, color: Color) {
-    DrawCircleSector(position, radius, 0f, 360f, 256, color)
+    open fun drawSmoothCircle(position: Vector2, radius: Float, color: Color) {
+        DrawCircleSector(position, radius, 0f, 360f, 256, color)
+    }
 }

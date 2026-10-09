@@ -28,7 +28,6 @@ class SolarSystem(
 ) {
     val objects: MutableList<GravityObject> = mutableListOf()
 
-    // Prędkość symulacji dobrana tak, by najciaśniejsza orbita trwała ~12 s.
     var suggestedTimeScale: Double = 1.0e5
         private set
 
@@ -61,9 +60,6 @@ class SolarSystem(
             )
         }
 
-        // ==========================================
-        // 1. POZYCJONOWANIE I PRĘDKOŚĆ GWIAZD
-        // ==========================================
         if (stars.size == 1) {
             stars[0].position = Vec2()
             stars[0].velocity = Vec2()
@@ -75,7 +71,6 @@ class SolarSystem(
             val minimumSeparation = stars.sumOf { it.radius.value } * 3.0
             val separation = maxOf(starGapKm, minimumSeparation)
 
-            // Gwiazdy symetrycznie względem środka masy umieszczonego w początku układu.
             stars[0].position = Vec2(-separation * (m2 / totalMass), 0.0)
             stars[1].position = Vec2(separation * (m1 / totalMass), 0.0)
             setBinaryStarOrbit(stars[0], stars[1])
@@ -85,9 +80,6 @@ class SolarSystem(
 
         val totalStarsMass = stars.sumOf { it.mass.value }
 
-        // ==========================================
-        // 2. PLANETY NA ORBITACH KOŁOWYCH
-        // ==========================================
         val outermostStar = stars.maxOf { abs(it.position.x) + it.radius.value }
         var previousPlanetRadius = 0.0
         var orbitRadius = 0.0
@@ -119,7 +111,6 @@ class SolarSystem(
 
             setCircularOrbit(planet, stars)
 
-            // Ślad pokrywa dokładnie jedną orbitę.
             planet.trailSegmentKm = 2.0 * PI * orbitRadius / planet.maxTrailPoints
 
             objects += planet
@@ -158,10 +149,6 @@ class SolarSystem(
         return items[weights.indexOfLast { it > 0f }]
     }
 
-    /**
-     * Krok symulacji o czasie [dtSim] sekund (już przeskalowanym przez timeScale).
-     * Dzielony na podkroki, by duże przyspieszenia i duże timeScale nie wybuchały.
-     */
     fun update(dtSim: Double) {
         if (dtSim <= 0.0 || objects.isEmpty()) return
 

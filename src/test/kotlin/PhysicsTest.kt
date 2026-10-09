@@ -14,20 +14,21 @@ import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-/**
- * Testowe ciało — bez rysowania i bez śladu, więc testy nie dotykają natywnego raylib.
- */
 private class TestBody(
-    override var mass: Quantity<Kilogram>,
-    override var radius: Quantity<Kilometer>,
-    override var position: Vec2 = Vec2(),
-    override var velocity: Vec2 = Vec2(),
-) : GravityObject {
-    override val name: String = "test"
-    override val trailPoints: MutableList<Vector2> = mutableListOf()
-    override var maxTrailPoints: Int = 10
-    override var trailSegmentKm: Double = 1.0
-
+    mass: Quantity<Kilogram>,
+    radius: Quantity<Kilometer>,
+    position: Vec2 = Vec2(),
+    velocity: Vec2 = Vec2(),
+    name: String = "test",
+) : GravityObject(
+    name = name,
+    mass = mass,
+    radius = radius,
+    position = position,
+    velocity = velocity,
+    maxTrailPoints = 10,
+    trailSegmentKm = 1.0,
+) {
     override fun draw() {}
     override fun updateTrail() {}
 }
@@ -57,7 +58,7 @@ class PhysicsTest {
         val separation = (planet.position - star.position).length()
         assertTrue(
             abs(separation - r) / r < 0.02,
-            "Po jednym okresie separacja powinna zostać ~$r km, jest $separation km"
+            "After one period separation should remain ~$r km, got $separation km"
         )
     }
 
@@ -76,14 +77,14 @@ class PhysicsTest {
 
         resolveCollisions(objects)
 
-        assertEquals(1, objects.size, "Dwa nachodzące ciała powinny się scalić")
+        assertEquals(1, objects.size, "Overlapping bodies should merge")
         val survivor = objects.first()
-        assertEquals(9.0e24, survivor.mass.value, 1e20, "Masa po scaleniu powinna być sumą mas")
+        assertEquals(9.0e24, survivor.mass.value, 1e20, "Merged mass should be sum of masses")
         assertEquals(
             momentumBefore,
             survivor.velocity.x * survivor.mass.value,
             1e20,
-            "Pęd powinien być zachowany"
+            "Momentum should be conserved"
         )
     }
 
@@ -107,8 +108,44 @@ class PhysicsTest {
             steps++
         }
 
-        assertEquals(1, objects.size, "Bliskie podejście powinno zakończyć się scaleniem")
+        assertEquals(1, objects.size, "Close approach should result in merge")
         val speed = objects.first().velocity.length()
-        assertTrue(speed < 100.0, "Scalenie nie może wystrzelić ciała: predkosc=$speed km/s")
+        assertTrue(speed < 100.0, "Merge should not slingshot body: speed=$speed km/s")
+    }
+
+    @Test
+    fun updateTrailRecordsInitialPositionAndSegments() {
+        val body = object : GravityObject(
+            name = "trailTest",
+            mass = unit(1.0, Kilogram),
+            radius = unit(1.0, Kilometer),
+            position = Vec2(0.0, 0.0),
+            maxTrailPoints = 3,
+            trailSegmentKm = 10.0,
+        ) {
+            override fun draw() {}
+        }
+
+        body.updateTrail()
+        assertEquals(1, body.trailPoints.size)
+        assertEquals(0.0f, body.trailPoints[0].x())
+        assertEquals(0.0f, body.trailPoints[0].y())
+
+        body.position = Vec2(5.0, 0.0)
+        body.updateTrail()
+        assertEquals(1, body.trailPoints.size)
+
+        body.position = Vec2(12.0, 0.0)
+        body.updateTrail()
+        assertEquals(2, body.trailPoints.size)
+
+        body.position = Vec2(25.0, 0.0)
+        body.updateTrail()
+        assertEquals(3, body.trailPoints.size)
+
+        body.position = Vec2(40.0, 0.0)
+        body.updateTrail()
+        assertEquals(3, body.trailPoints.size)
+        assertEquals(12.0f, body.trailPoints[0].x())
     }
 }

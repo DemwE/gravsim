@@ -6,19 +6,10 @@ import units.Kilogram
 import units.Kilometer
 import units.Quantity
 
-// G w jednostkach (km^3 / (kg * s^2)), dopasowana do pozycji w kilometrach.
 const val G: Double = 6.67430e-20
-
-// Maksymalny pojedynczy krok integracji w sekundach symulacji.
 const val MAX_PHYSICS_STEP: Double = 600.0
-
-// Bezpiecznik — maksymalna liczba podkroków na jedną klatkę.
 const val MAX_SUBSTEPS: Int = 2000
 
-/**
- * Pojedynczy krok grawitacji (półjawna metoda Eulera).
- * Przyspieszenia zbierane są w tablicach, więc wynik nie zależy od kolejności par.
- */
 fun stepPhysics(objects: List<GravityObject>, dt: Double) {
     if (objects.isEmpty() || dt <= 0.0) return
 
@@ -33,7 +24,6 @@ fun stepPhysics(objects: List<GravityObject>, dt: Double) {
             val dx = b.position.x - a.position.x
             val dy = b.position.y - a.position.y
 
-            // Softening w skali promieni ciał — usuwa osobliwość 1/r^2 przy bliskim kontakcie.
             val softening = a.radius.value + b.radius.value
             val distSq = dx * dx + dy * dy + softening * softening
             val invDist = 1.0 / sqrt(distSq)
@@ -59,10 +49,6 @@ fun stepPhysics(objects: List<GravityObject>, dt: Double) {
     }
 }
 
-/**
- * Scala ciała, których tarcze się przecinają (zderzenie nieelastyczne):
- * zachowany pęd, suma mas, promień z sumy objętości. Zapobiega "wystrzeliwaniu" przy kolizji.
- */
 fun resolveCollisions(objects: MutableList<GravityObject>) {
     var i = 0
     while (i < objects.size) {

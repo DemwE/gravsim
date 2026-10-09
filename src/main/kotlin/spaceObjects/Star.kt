@@ -52,7 +52,6 @@ class Star(
         val starColor = color
         val (glowColorInner, glowColorOuter) = starGlow(starColor)
 
-        // 1. Ślad trajektorii gwiazdy (pod poświatą)
         val trailBaseColor = Color()
             .r(starColor.r())
             .g(starColor.g())
@@ -60,7 +59,6 @@ class Star(
             .a(180.toByte())
         drawTrail(trailBaseColor)
 
-        // 2. Poświata
         val glowRadius = (radius.value * 2.5).toFloat()
         DrawCircleGradient(
             screenPosition,
@@ -69,7 +67,6 @@ class Star(
             glowColorOuter,
         )
 
-        // 3. Rdzeń
         drawSmoothCircle(screenPosition, radius.value.toFloat(), starColor)
     }
 }
