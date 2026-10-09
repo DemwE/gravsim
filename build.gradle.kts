@@ -25,21 +25,23 @@ kotlin {
 
 tasks.jar {
     archiveFileName.set("gravsim.jar")
+
     manifest {
-        attributes(
-            "Main-Class" to "MainKt"
-        )
+        attributes["Main-Class"] = "MainKt"
+        attributes["Enable-Native-Access"] = "ALL-UNNAMED"
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     from(sourceSets.main.get().output)
+
     dependsOn(configurations.runtimeClasspath)
-    from({
-        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-    })
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     doLast {
         copy {
             from(archiveFile)
-            into(file("${rootDir}/out/artifacts/gravsim"))
+            into(layout.projectDirectory.dir("out/artifacts/gravsim"))
         }
     }
 }
