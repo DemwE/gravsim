@@ -31,7 +31,7 @@ internal object ProximaCentauriPreset : PresetFactory {
 
         val result = SystemGenerationResult(
             objects = listOf(proxima) + bodies,
-            suggestedTimeScale = 5.1 * 24.0 * 60.0 * 60.0 / 12.0,
+            suggestedTimeScale = suggestedTimeScaleForOrbitalPeriod(5.1 * Day.factorToSI),
         )
         return SolarSystem("Proxima Centauri", seed).apply { populate(result) }
     }
@@ -51,6 +51,6 @@ internal object ProximaCentauriPreset : PresetFactory {
             mass = unit(massEarth, EarthMass).convertTo(Kilogram),
             radius = unit(radiusKm, Kilometer),
             position = host.position + Vec2(orbitRadius, 0.0),
-        ).also { it.trailSegmentKm = 2.0 * kotlin.math.PI * orbitRadius / it.maxTrailPoints }
+        )
     }
 }

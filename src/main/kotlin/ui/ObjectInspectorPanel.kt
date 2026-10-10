@@ -1,15 +1,15 @@
 package ui
 
 import com.raylib.Colors.*
-import com.raylib.Raylib.*
+import config.HudConfig
 import spaceObjects.*
 
 class ObjectInspectorPanel {
     fun draw(screenHeight: Int, selectedObject: GravityObject?, followedObject: GravityObject?, scale: Float = 1.0f) {
         val obj = selectedObject ?: return
 
-        val inspectorWidth = (360 * scale).toInt()
-        val inspectorHeight = (180 * scale).toInt()
+        val inspectorWidth = (HudConfig.INSPECTOR_WIDTH * scale).toInt()
+        val inspectorHeight = (HudConfig.INSPECTOR_HEIGHT * scale).toInt()
         val inspectorX = (10 * scale).toInt()
         val inspectorY = screenHeight - inspectorHeight - (45 * scale).toInt()
 

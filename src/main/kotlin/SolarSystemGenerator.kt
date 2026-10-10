@@ -1,9 +1,11 @@
 import bodyTypes.*
-import engine.G
+import config.GenerationConfig
 import engine.MAX_PLANETS
 import engine.MAP_HALF_KM
 import lib.NameGenerator
 import lib.Seed
+import presets.orbitalPeriodSeconds
+import presets.suggestedTimeScaleForOrbitalPeriod
 import spaceObjects.*
 import units.*
 import kotlin.math.*
@@ -15,12 +17,8 @@ data class SystemGenerationResult(
 )
 
 object SolarSystemGenerator {
-    private const val PLANET_COUNT_SEED_SALT: Long = 0x51A7E5L
-    private const val MIN_ORBIT_MAP_FRACTION: Double = 0.4
-    private const val MAX_ORBIT_MAP_FRACTION: Double = 0.8
-
     fun planetCountFromSeed(seed: Seed): Int =
-        Random(seed.value xor PLANET_COUNT_SEED_SALT).nextInt(1, MAX_PLANETS + 1)
+        Random(seed.value xor GenerationConfig.SEED_PLANET_COUNT_SALT).nextInt(1, MAX_PLANETS + 1)
 
     fun generate(name: String, seed: Seed, planets: Int? = null): SystemGenerationResult {
         val planetCount = planets ?: planetCountFromSeed(seed)
@@ -30,9 +28,9 @@ object SolarSystemGenerator {
 
         val objects = mutableListOf<GravityObject>()
         val random = Random(seed.value)
-        val starCount = random.nextInt(1, 3)
-        val starGapKm = unit(1.0, AstronomicalUnit).convertTo(Kilometer).value
-        val planetGapKm = starGapKm * 0.1
+        val starCount = random.nextInt(GenerationConfig.MIN_STARS, GenerationConfig.MAX_STARS_EXCLUSIVE)
+        val starGapKm = unit(GenerationConfig.STAR_GAP_AU, AstronomicalUnit).convertTo(Kilometer).value
+        val planetGapKm = starGapKm * GenerationConfig.PLANET_GAP_FRACTION_OF_STAR_GAP
         val stars = mutableListOf<Star>()
 
         repeat(starCount) { index ->
@@ -63,7 +61,7 @@ object SolarSystemGenerator {
             val m2 = stars[1].mass.value
             val totalMass = m1 + m2
 
-            val minimumSeparation = stars.sumOf { it.radius.value } * 3.0
+            val minimumSeparation = stars.sumOf { it.radius.value } * GenerationConfig.MIN_STAR_SEPARATION_RADII
             val separation = maxOf(starGapKm, minimumSeparation)
             binarySeparation = separation
 
@@ -77,7 +75,7 @@ object SolarSystemGenerator {
         val totalStarsMass = stars.sumOf { it.mass.value }
         val outermostStar = stars.maxOf { abs(it.position.x) + it.radius.value }
         val minimumPlanetDistance = if (starCount > 1) {
-            binarySeparation * 2.5
+            binarySeparation * GenerationConfig.MIN_BINARY_PLANET_ORBIT_FACTOR
         } else {
             outermostStar + planetGapKm
         }
@@ -93,8 +91,8 @@ object SolarSystemGenerator {
         val orbitRadii = generateOrbitRadii(
             innerRadius = minimumPlanetDistance + (generatedPlanets.firstOrNull()?.radiusKm ?: 0.0),
             outerRadius = MAP_HALF_KM * random.nextDouble(
-                MIN_ORBIT_MAP_FRACTION,
-                MAX_ORBIT_MAP_FRACTION,
+                GenerationConfig.MIN_ORBIT_MAP_FRACTION,
+                GenerationConfig.MAX_ORBIT_MAP_FRACTION,
             ),
             count = planetCount,
             random = random,
@@ -115,16 +113,13 @@ object SolarSystemGenerator {
             )
 
             setCircularOrbit(planet, stars)
-            planet.trailSegmentKm = 2.0 * PI * orbitRadius / planet.maxTrailPoints
             objects += planet
         }
 
-        var suggestedTimeScale = 1.0e5
+        var suggestedTimeScale = GenerationConfig.DEFAULT_SUGGESTED_TIME_SCALE
         if (planetCount > 0) {
-            val innerPeriod = 2.0 * PI * sqrt(
-                innerOrbitRadius * innerOrbitRadius * innerOrbitRadius / (G * totalStarsMass)
-            )
-            suggestedTimeScale = innerPeriod / 12.0
+            val innerPeriod = orbitalPeriodSeconds(innerOrbitRadius, totalStarsMass)
+            suggestedTimeScale = suggestedTimeScaleForOrbitalPeriod(innerPeriod)
         }
 
         return SystemGenerationResult(objects, suggestedTimeScale)
@@ -146,7 +141,7 @@ object SolarSystemGenerator {
         }
 
         val logStep = (outerLog - innerLog) / (count - 1)
-        val jitterLimit = logStep * 0.2
+        val jitterLimit = logStep * GenerationConfig.ORBIT_RADIUS_JITTER_FRACTION
         return List(count) { index ->
             val jitter = if (index == 0 || index == count - 1) {
                 0.0

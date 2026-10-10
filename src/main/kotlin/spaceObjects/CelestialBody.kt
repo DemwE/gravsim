@@ -3,6 +3,7 @@ package spaceObjects
 import bodyTypes.AtmosphereType
 import bodyTypes.CelestialBodyType
 import com.raylib.Raylib.*
+import config.TrailConfig
 import units.Kilogram
 import units.Kilometer
 import units.Quantity
@@ -16,8 +17,8 @@ class CelestialBody(
     position: Vec2 = Vec2(),
     velocity: Vec2 = Vec2(),
     trailPoints: ArrayDeque<Vector2> = ArrayDeque(),
-    maxTrailPoints: Int = 800,
-    trailSegmentKm: Double = 1000.0,
+    maxTrailPoints: Int = TrailConfig.DEFAULT_MAX_POINTS,
+    trailSegmentKm: Double = TrailConfig.DEFAULT_SEGMENT_KM,
 ) : GravityObject(
     name = name,
     mass = mass,
@@ -38,7 +39,7 @@ class CelestialBody(
         get() = type.color
 
     private val trailBaseColor: Color by lazy {
-        Color().r(color.r()).g(color.g()).b(color.b()).a(200.toByte())
+        Color().r(color.r()).g(color.g()).b(color.b()).a(TrailConfig.PLANET_TRAIL_ALPHA.toByte())
     }
 
     override fun draw() {

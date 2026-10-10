@@ -2,6 +2,7 @@ package ui
 
 import com.raylib.Colors.*
 import com.raylib.Raylib.*
+import config.WorldRenderConfig
 import engine.AU_KM
 import engine.MAP_HALF_KM
 
@@ -22,28 +23,28 @@ object WorldBoundariesRenderer {
         drawGrid(halfKm)
 
         // A quiet base outline keeps the world edge visible at every zoom level.
-        val boundaryColor = Fade(SKYBLUE, 0.12f)
+        val boundaryColor = Fade(SKYBLUE, WorldRenderConfig.BOUNDARY_ALPHA)
         DrawLineV(bTopLeft, bTopRight, boundaryColor)
         DrawLineV(bTopRight, bBottomRight, boundaryColor)
         DrawLineV(bBottomRight, bBottomLeft, boundaryColor)
         DrawLineV(bBottomLeft, bTopLeft, boundaryColor)
 
         // Short corner brackets give the simulation area a clean sci-fi frame.
-        val bracket = halfKm * 0.035f
-        val bracketColor = Fade(SKYBLUE, 0.55f)
+        val bracket = halfKm * WorldRenderConfig.CORNER_BRACKET_FRACTION
+        val bracketColor = Fade(SKYBLUE, WorldRenderConfig.CORNER_BRACKET_ALPHA)
         drawCorner(-halfKm, -halfKm, 1f, 1f, bracket, bracketColor)
         drawCorner(halfKm, -halfKm, -1f, 1f, bracket, bracketColor)
         drawCorner(halfKm, halfKm, -1f, -1f, bracket, bracketColor)
         drawCorner(-halfKm, halfKm, 1f, -1f, bracket, bracketColor)
 
         // Small navigation ticks mark the quarter points along the boundary.
-        val tick = halfKm * 0.012f
+        val tick = halfKm * WorldRenderConfig.BOUNDARY_TICK_FRACTION
         for (fraction in floatArrayOf(-0.5f, 0f, 0.5f)) {
             val offset = halfKm * fraction
-            DrawLineV(point(offset, -halfKm), point(offset, -halfKm + tick), Fade(SKYBLUE, 0.28f))
-            DrawLineV(point(offset, halfKm), point(offset, halfKm - tick), Fade(SKYBLUE, 0.28f))
-            DrawLineV(point(-halfKm, offset), point(-halfKm + tick, offset), Fade(SKYBLUE, 0.28f))
-            DrawLineV(point(halfKm, offset), point(halfKm - tick, offset), Fade(SKYBLUE, 0.28f))
+            DrawLineV(point(offset, -halfKm), point(offset, -halfKm + tick), Fade(SKYBLUE, WorldRenderConfig.BOUNDARY_TICK_ALPHA))
+            DrawLineV(point(offset, halfKm), point(offset, halfKm - tick), Fade(SKYBLUE, WorldRenderConfig.BOUNDARY_TICK_ALPHA))
+            DrawLineV(point(-halfKm, offset), point(-halfKm + tick, offset), Fade(SKYBLUE, WorldRenderConfig.BOUNDARY_TICK_ALPHA))
+            DrawLineV(point(halfKm, offset), point(halfKm - tick, offset), Fade(SKYBLUE, WorldRenderConfig.BOUNDARY_TICK_ALPHA))
         }
     }
 
@@ -53,17 +54,17 @@ object WorldBoundariesRenderer {
     }
 
     private fun drawGrid(halfKm: Float) {
-        val step = 10f * AU_KM.toFloat()
+        val step = WorldRenderConfig.GRID_STEP_AU * AU_KM.toFloat()
         val divisions = (halfKm / step).toInt()
-        val minorColor = Fade(SKYBLUE, 0.035f)
-        val majorColor = Fade(SKYBLUE, 0.075f)
-        val axisColor = Fade(SKYBLUE, 0.13f)
+        val minorColor = Fade(SKYBLUE, WorldRenderConfig.GRID_MINOR_ALPHA)
+        val majorColor = Fade(SKYBLUE, WorldRenderConfig.GRID_MAJOR_ALPHA)
+        val axisColor = Fade(SKYBLUE, WorldRenderConfig.GRID_AXIS_ALPHA)
 
         for (index in -divisions..divisions) {
             val coordinate = index * step
             val color = when {
                 index == 0 -> axisColor
-                index % 5 == 0 -> majorColor
+                index % WorldRenderConfig.GRID_MAJOR_EVERY == 0 -> majorColor
                 else -> minorColor
             }
             DrawLineV(point(coordinate, -halfKm), point(coordinate, halfKm), color)

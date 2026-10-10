@@ -2,13 +2,14 @@ package ui
 
 import com.raylib.Colors.*
 import com.raylib.Raylib.*
+import config.HudConfig
 
 class TopStatusBar {
-    private val panelWidth = 520f
-    private val panelHeight = 112f
-    private val pauseWidth = 42f
-    private val stepStartX = 68f
-    private val stepWidth = 58f
+    private val panelWidth = HudConfig.TOP_PANEL_WIDTH
+    private val panelHeight = HudConfig.TOP_PANEL_HEIGHT
+    private val pauseWidth = HudConfig.TOP_PAUSE_WIDTH
+    private val stepStartX = HudConfig.TOP_STEP_START_X
+    private val stepWidth = HudConfig.TOP_STEP_WIDTH
 
     fun draw(timeScale: Double, simulatedTime: Double, paused: Boolean, scale: Float = 1.0f) {
         val width = (panelWidth * scale).toInt()
@@ -72,7 +73,7 @@ class TopStatusBar {
     }
 
     fun timeWarpStepAt(mousePos: Vector2, scale: Float): Int? {
-        val factor = dpiScale()
+        val factor = HudStyle.dpiScale()
         val x = mousePos.x() * factor
         val y = mousePos.y() * factor
         val panelX = 10f * scale
@@ -87,16 +88,11 @@ class TopStatusBar {
     }
 
     fun pauseButtonContains(mousePos: Vector2, scale: Float): Boolean {
-        val factor = dpiScale()
+        val factor = HudStyle.dpiScale()
         val x = mousePos.x() * factor
         val y = mousePos.y() * factor
         val left = 22f * scale
         val top = 79f * scale
         return x in left..(left + pauseWidth * scale) && y in top..(top + 30f * scale)
-    }
-
-    private fun dpiScale(): Float {
-        val logicalWidth = GetScreenWidth()
-        return if (logicalWidth > 0) (GetRenderWidth().toFloat() / logicalWidth).coerceAtLeast(1f) else 1f
     }
 }

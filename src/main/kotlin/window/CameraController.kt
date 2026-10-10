@@ -1,6 +1,7 @@
 package window
 
 import com.raylib.Raylib.*
+import config.CameraConfig
 import spaceObjects.GravityObject
 import kotlin.math.abs
 
@@ -19,7 +20,8 @@ class CameraController {
         if (wheelMove != 0f) {
             val mousePosition = GetMousePosition()
             val worldPositionBeforeZoom = GetScreenToWorld2D(mousePosition, camera)
-            val newZoom = (camera.zoom() * (1f + wheelMove * 0.1f)).coerceIn(1.0e-8f, 1000f)
+            val newZoom = (camera.zoom() * (1f + wheelMove * CameraConfig.WHEEL_ZOOM_STEP))
+                .coerceIn(CameraConfig.MIN_ZOOM, CameraConfig.MAX_ZOOM)
             camera.zoom(newZoom)
             val worldPositionAfterZoom = GetScreenToWorld2D(mousePosition, camera)
             camera.target(
@@ -67,7 +69,10 @@ class CameraController {
         val camY = camera.target().y().toDouble()
 
         // Give a generous margin so large atmospheres/glow and selection rings don't pop out
-        val visualMarginKm = maxOf(obj.radius.value * 3.0, (100.0 / zoom))
+        val visualMarginKm = maxOf(
+            obj.radius.value * CameraConfig.VISUAL_RADIUS_MULTIPLIER,
+            CameraConfig.MIN_VISUAL_MARGIN_PIXELS / zoom,
+        )
         val dx = abs(obj.position.x - camX)
         val dy = abs(obj.position.y - camY)
 
@@ -77,7 +82,7 @@ class CameraController {
     fun reset(camera: Camera2D) {
         followedObject = null
         camera.target(targetVec.x(0f).y(0f))
-        camera.zoom(0.00001f)
+        camera.zoom(CameraConfig.INITIAL_ZOOM)
     }
 
     fun follow(obj: GravityObject?) {

@@ -1,6 +1,7 @@
 package spaceObjects
 
 import com.raylib.Raylib.*
+import config.TrailConfig
 import units.Kilogram
 import units.Kilometer
 import units.Quantity
@@ -12,8 +13,8 @@ abstract class GravityObject(
     open var position: Vec2 = Vec2(),
     open var velocity: Vec2 = Vec2(),
     open val trailPoints: ArrayDeque<Vector2> = ArrayDeque(),
-    open var maxTrailPoints: Int = 800,
-    open var trailSegmentKm: Double = 1000.0,
+    open var maxTrailPoints: Int = TrailConfig.DEFAULT_MAX_POINTS,
+    open var trailSegmentKm: Double = TrailConfig.DEFAULT_SEGMENT_KM,
 ) {
     val renderPosition: Vector2 = Vector2()
 
@@ -72,7 +73,7 @@ abstract class GravityObject(
         val b = baseColor.b()
 
         val segments = total - 1
-        val bands = minOf(16, segments)
+        val bands = minOf(TrailConfig.DRAW_ALPHA_BANDS, segments)
         for (band in 0 until bands) {
             val startSeg = segments * band / bands
             val endSeg = if (band == bands - 1) segments else segments * (band + 1) / bands

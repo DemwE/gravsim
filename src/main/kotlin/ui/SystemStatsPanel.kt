@@ -1,15 +1,15 @@
 package ui
 
 import com.raylib.Colors.*
-import com.raylib.Raylib.*
+import config.HudConfig
 import spaceObjects.*
 import units.*
 import java.util.Locale
 
 class SystemStatsPanel {
     fun draw(screenWidth: Int, objects: List<GravityObject>, showOverlay: Boolean, systemName: String = "System", scale: Float = 1.0f) {
-        val panelWidth = (340 * scale).toInt()
-        val panelHeight = (150 * scale).toInt()
+        val panelWidth = (HudConfig.SYSTEM_PANEL_WIDTH * scale).toInt()
+        val panelHeight = (HudConfig.SYSTEM_PANEL_HEIGHT * scale).toInt()
         val panelX = screenWidth - panelWidth - (15 * scale).toInt()
         val panelY = (10 * scale).toInt()
         HudStyle.drawPanel(panelX, panelY, panelWidth, panelHeight, SKYBLUE)

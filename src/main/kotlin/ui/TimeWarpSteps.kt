@@ -1,10 +1,13 @@
 package ui
 
+import units.Day
+
 object TimeWarpSteps {
     // Fixed simulation seconds per real second, from one day up to 500 days.
     private val scales = doubleArrayOf(
-        86_400.0, 864_000.0, 2_160_000.0, 4_320_000.0,
-        8_640_000.0, 21_600_000.0, 43_200_000.0,
+        Day.factorToSI, 10.0 * Day.factorToSI, 25.0 * Day.factorToSI,
+        50.0 * Day.factorToSI, 100.0 * Day.factorToSI, 250.0 * Day.factorToSI,
+        500.0 * Day.factorToSI,
     )
     private val labels = arrayOf(
         "1d", "10d", "25d", "50d", "100d", "250d", "500d",

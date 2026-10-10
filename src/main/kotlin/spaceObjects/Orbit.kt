@@ -1,6 +1,7 @@
 package spaceObjects
 
 import engine.G
+import kotlin.math.PI
 import kotlin.math.sqrt
 
 fun setCircularOrbit(
@@ -31,6 +32,7 @@ fun setCircularOrbit(
         cvx + tangentX / r * speed,
         cvy + tangentY / r * speed
     )
+    satellite.trailSegmentKm = 2.0 * PI * r / satellite.maxTrailPoints
 }
 
 fun setBinaryStarOrbit(star1: GravityObject, star2: GravityObject) {

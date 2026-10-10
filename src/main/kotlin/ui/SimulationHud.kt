@@ -1,6 +1,7 @@
 package ui
 
 import com.raylib.Raylib.*
+import config.HudConfig
 import spaceObjects.GravityObject
 
 class SimulationHud(
@@ -12,18 +13,18 @@ class SimulationHud(
 ) {
     var showOverlay: Boolean = false
     var selectedObject: GravityObject? = null
-    var scale: Float = 1.3f
+    var scale: Float = HudConfig.INITIAL_SCALE
 
     fun scaleUp() {
-        scale = (scale + 0.1f).coerceAtMost(2.5f)
+        scale = (scale + HudConfig.SCALE_STEP).coerceAtMost(HudConfig.MAX_SCALE)
     }
 
     fun scaleDown() {
-        scale = (scale - 0.1f).coerceAtLeast(0.6f)
+        scale = (scale - HudConfig.SCALE_STEP).coerceAtLeast(HudConfig.MIN_SCALE)
     }
 
     fun scaleReset() {
-        scale = 1.0f
+        scale = HudConfig.RESET_SCALE
     }
 
     fun selectObjectAt(mousePos: Vector2, camera: Camera2D, objects: List<GravityObject>): GravityObject? {
@@ -31,10 +32,7 @@ class SimulationHud(
     }
 
     fun drawWorldOverlay(camera: Camera2D, objects: List<GravityObject>, followedObject: GravityObject?) {
-        val screenWidth = GetRenderWidth()
-        val logicalWidth = GetScreenWidth()
-        val dpiScale = if (logicalWidth > 0) (screenWidth.toFloat() / logicalWidth.toFloat()).coerceAtLeast(1.0f) else 1.0f
-        worldOverlay.draw(camera, objects, selectedObject, followedObject, showOverlay, scale * dpiScale)
+        worldOverlay.draw(camera, objects, selectedObject, followedObject, showOverlay, effectiveScale())
     }
 
     fun drawScreenHud(
@@ -47,9 +45,7 @@ class SimulationHud(
     ) {
         val screenWidth = GetRenderWidth()
         val screenHeight = GetRenderHeight()
-        val logicalWidth = GetScreenWidth()
-        val dpiScale = if (logicalWidth > 0) (screenWidth.toFloat() / logicalWidth.toFloat()).coerceAtLeast(1.0f) else 1.0f
-        val effectiveScale = scale * dpiScale
+        val effectiveScale = effectiveScale()
 
         topStatusBar.draw(timeScale, simulatedTime, paused, effectiveScale)
         systemStatsPanel.draw(screenWidth, objects, showOverlay, systemName, effectiveScale)
@@ -65,8 +61,6 @@ class SimulationHud(
         topStatusBar.pauseButtonContains(mousePos, effectiveScale())
 
     private fun effectiveScale(): Float {
-        val logicalWidth = GetScreenWidth()
-        val dpiScale = if (logicalWidth > 0) (GetRenderWidth().toFloat() / logicalWidth).coerceAtLeast(1.0f) else 1.0f
-        return scale * dpiScale
+        return HudStyle.effectiveScale(scale)
     }
 }

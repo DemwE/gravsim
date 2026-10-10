@@ -1,6 +1,7 @@
 package ui
 
 import com.raylib.Raylib.*
+import config.CameraConfig
 import spaceObjects.GravityObject
 
 /**
@@ -20,11 +21,9 @@ internal object ObjectPicker {
         val mouseX = worldMouse.x().toDouble()
         val mouseY = worldMouse.y().toDouble()
 
-        val screenWidth = GetRenderWidth()
-        val logicalWidth = GetScreenWidth()
-        val dpiScale = if (logicalWidth > 0) (screenWidth.toFloat() / logicalWidth.toFloat()).coerceAtLeast(1.0f) else 1.0f
+        val dpiScale = HudStyle.dpiScale()
 
-        val hitPaddingKm = (25.0 * dpiScale) / zoom
+        val hitPaddingKm = (CameraConfig.OBJECT_PICK_PADDING_PIXELS * dpiScale) / zoom
 
         var closest: GravityObject? = null
         var minDistanceSq = Double.MAX_VALUE

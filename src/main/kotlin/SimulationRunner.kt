@@ -1,5 +1,7 @@
 import com.raylib.Colors.BLACK
 import com.raylib.Raylib.*
+import config.CameraConfig
+import config.SimulationConfig
 import lib.Seed
 import presets.SystemPreset
 import ui.GuiFont
@@ -10,18 +12,15 @@ import window.CameraController
 import window.InputHandler
 import window.initializeWindow
 
-private const val TARGET_FPS = 75
-private const val MAX_FRAME_TIME = 0.05f
-
 object SimulationRunner {
     fun run(preset: SystemPreset, seedValue: Long, planetCount: Int?) {
-        SetTargetFPS(TARGET_FPS)
+        SetTargetFPS(SimulationConfig.TARGET_FPS)
         initializeWindow()
 
         val camera = Camera2D()
             .offset(Vector2().x(GetRenderWidth() / 2f).y(GetRenderHeight() / 2f))
             .target(Vector2())
-            .zoom(0.00001f)
+            .zoom(CameraConfig.INITIAL_ZOOM)
         val cameraController = CameraController()
         val hud = SimulationHud()
         val inputHandler = InputHandler(cameraController, hud, planetCount)
@@ -45,7 +44,7 @@ object SimulationRunner {
             )
 
             if (!paused) {
-                val dtSim = GetFrameTime().coerceAtMost(MAX_FRAME_TIME).toDouble() * timeScale
+                val dtSim = GetFrameTime().coerceAtMost(SimulationConfig.MAX_FRAME_SECONDS).toDouble() * timeScale
                 system.update(dtSim)
                 simulatedTime += dtSim
             }

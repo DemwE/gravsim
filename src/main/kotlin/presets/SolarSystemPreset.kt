@@ -12,7 +12,6 @@ import spaceObjects.Star
 import spaceObjects.Vec2
 import spaceObjects.setCircularOrbit
 import units.*
-import kotlin.math.PI
 
 internal object SolarSystemPreset : PresetFactory {
     override fun create(seed: Seed, planets: Int?): SolarSystem {
@@ -36,10 +35,10 @@ internal object SolarSystemPreset : PresetFactory {
         val bodies = planetData.map { it.create(sun) }
         val result = SystemGenerationResult(
             objects = listOf(sun) + bodies,
-            suggestedTimeScale = orbitalPeriodSeconds(
+            suggestedTimeScale = suggestedTimeScaleForOrbitalPeriod(orbitalPeriodSeconds(
                 planetData.first().orbitAu * AU_KM,
                 sun.mass.value,
-            ) / 12.0,
+            )),
         )
         return SolarSystem("Solar System", seed).apply { populate(result) }
     }
@@ -63,7 +62,6 @@ internal object SolarSystemPreset : PresetFactory {
                 position = Vec2(orbitRadius, 0.0),
             ).also { planet ->
                 setCircularOrbit(planet, listOf(sun))
-                planet.trailSegmentKm = 2.0 * PI * orbitRadius / planet.maxTrailPoints
             }
         }
     }

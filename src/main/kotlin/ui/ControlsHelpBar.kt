@@ -2,12 +2,13 @@ package ui
 
 import com.raylib.Colors.*
 import com.raylib.Raylib.*
+import config.HudConfig
 
 class ControlsHelpBar {
     private val bottomBarBg = Color().r(10.toByte()).g(16.toByte()).b(24.toByte()).a(238.toByte())
 
     fun draw(screenWidth: Int, screenHeight: Int, scale: Float = 1.0f) {
-        val bottomBarHeight = (32 * scale).toInt()
+        val bottomBarHeight = (HudConfig.BOTTOM_BAR_HEIGHT * scale).toInt()
         val bottomBarY = screenHeight - bottomBarHeight
         DrawRectangle(0, bottomBarY, screenWidth, bottomBarHeight, bottomBarBg)
         DrawLine(0, bottomBarY, screenWidth, bottomBarY, DARKGRAY)

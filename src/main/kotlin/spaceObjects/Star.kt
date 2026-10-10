@@ -2,6 +2,7 @@ package spaceObjects
 
 import bodyTypes.StarType
 import com.raylib.Raylib.*
+import config.TrailConfig
 import units.Kelvin
 import units.Kilogram
 import units.Kilometer
@@ -16,8 +17,8 @@ class Star(
     position: Vec2 = Vec2(),
     velocity: Vec2 = Vec2(),
     trailPoints: ArrayDeque<Vector2> = ArrayDeque(),
-    maxTrailPoints: Int = 800,
-    trailSegmentKm: Double = 1000.0,
+    maxTrailPoints: Int = TrailConfig.DEFAULT_MAX_POINTS,
+    trailSegmentKm: Double = TrailConfig.DEFAULT_SEGMENT_KM,
 ) : GravityObject(
     name = name,
     mass = mass,
@@ -32,7 +33,7 @@ class Star(
         get() = type.color
 
     private val trailBaseColor: Color by lazy {
-        Color().r(color.r()).g(color.g()).b(color.b()).a(180.toByte())
+        Color().r(color.r()).g(color.g()).b(color.b()).a(TrailConfig.STAR_TRAIL_ALPHA.toByte())
     }
 
     override fun draw() {
