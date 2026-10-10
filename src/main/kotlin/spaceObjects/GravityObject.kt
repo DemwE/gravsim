@@ -81,12 +81,4 @@ abstract class GravityObject(
             DrawLineStrip(strip.position(startSeg.toLong()), count, segmentColor)
         }
     }
-
-    open fun drawSmoothCircle(position: Vector2, radius: Float, color: Color) {
-        if (radius < 8f) {
-            DrawCircleV(position, radius, color)
-        } else {
-            DrawCircleSector(position, radius, 0f, 360f, 64, color)
-        }
-    }
 }

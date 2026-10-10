@@ -87,4 +87,27 @@ internal class BodyBuffers(
             hasCollided = false
         }
     }
+
+    fun recenterOnBarycenter() {
+        var totalMass = 0.0
+        var weightedX = 0.0
+        var weightedY = 0.0
+        for (i in 0 until count) {
+            totalMass += mass[i]
+            weightedX += posX[i] * mass[i]
+            weightedY += posY[i] * mass[i]
+        }
+        if (totalMass <= 0.0) return
+        val centerX = weightedX / totalMass
+        val centerY = weightedY / totalMass
+        if (!centerX.isFinite() || !centerY.isFinite()) return
+        for (i in 0 until count) {
+            posX[i] -= centerX
+            posY[i] -= centerY
+            for (point in bodies[i].trailPoints) {
+                point.x((point.x() - centerX).toFloat())
+                point.y((point.y() - centerY).toFloat())
+            }
+        }
+    }
 }

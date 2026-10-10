@@ -46,6 +46,7 @@ class SolarSystem(
             }
 
             engine.resolveCollisions()
+            engine.recenterOnBarycenter()
         }
 
         engine.syncToObjects()

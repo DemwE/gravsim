@@ -35,27 +35,8 @@ class Star(
         Color().r(color.r()).g(color.g()).b(color.b()).a(180.toByte())
     }
 
-    private val glowColorInner: Color by lazy {
-        Color().r(color.r()).g(color.g()).b(color.b()).a(120.toByte())
-    }
-
-    private val glowColorOuter: Color by lazy {
-        Color().r(color.r()).g(color.g()).b(color.b()).a(0.toByte())
-    }
-
     override fun draw() {
         renderPosition.x(position.x.toFloat()).y(position.y.toFloat())
-
         drawTrail(trailBaseColor)
-
-        val glowRadius = (radius.value * 2.5).toFloat()
-        DrawCircleGradient(
-            renderPosition,
-            glowRadius,
-            glowColorInner,
-            glowColorOuter,
-        )
-
-        drawSmoothCircle(renderPosition, radius.value.toFloat(), color)
     }
 }

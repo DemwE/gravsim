@@ -56,6 +56,8 @@ class PhysicsEngine(
 
     fun resolveCollisions() = CollisionResolver.resolveCollisions(buffers)
 
+    fun recenterOnBarycenter() = buffers.recenterOnBarycenter()
+
     fun positionX(index: Int): Double = buffers.posX[index]
 
     fun positionY(index: Int): Double = buffers.posY[index]

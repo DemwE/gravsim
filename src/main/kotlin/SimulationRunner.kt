@@ -5,6 +5,7 @@ import presets.SystemPreset
 import ui.GuiFont
 import ui.SimulationHud
 import ui.WorldBoundariesRenderer
+import ui.ScreenWorldRenderer
 import window.CameraController
 import window.InputHandler
 import window.initializeWindow
@@ -90,6 +91,8 @@ object SimulationRunner {
             if (cameraController.isVisible(obj, camera)) obj.draw()
         }
         EndMode2D()
+
+        ScreenWorldRenderer.draw(camera, system.objects)
 
         hud.drawWorldOverlay(camera, system.objects, cameraController.followedObject)
         hud.drawScreenHud(

@@ -1,7 +1,6 @@
 package window
 
 import com.raylib.Raylib.*
-import engine.MAP_HALF_KM
 import spaceObjects.GravityObject
 import kotlin.math.abs
 
@@ -56,12 +55,6 @@ class CameraController {
                 camera.target(targetVec)
             }
         }
-
-        // Clamp camera target to map boundaries
-        val halfKm = MAP_HALF_KM.toFloat()
-        val clampedX = camera.target().x().coerceIn(-halfKm, halfKm)
-        val clampedY = camera.target().y().coerceIn(-halfKm, halfKm)
-        camera.target().x(clampedX).y(clampedY)
     }
 
     fun isVisible(obj: GravityObject, camera: Camera2D): Boolean {
@@ -90,4 +83,5 @@ class CameraController {
     fun follow(obj: GravityObject?) {
         followedObject = obj
     }
+
 }

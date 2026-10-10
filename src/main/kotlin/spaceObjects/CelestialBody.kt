@@ -41,28 +41,8 @@ class CelestialBody(
         Color().r(color.r()).g(color.g()).b(color.b()).a(200.toByte())
     }
 
-    private val atmosphereColor: Color by lazy {
-        atmosphere.colorWithOpacity(opacity = 75)
-    }
-
-    private val transparentAtmosphere: Color by lazy {
-        Color().r(atmosphereColor.r()).g(atmosphereColor.g()).b(atmosphereColor.b()).a(0.toByte())
-    }
-
     override fun draw() {
         renderPosition.x(position.x.toFloat()).y(position.y.toFloat())
-
         drawTrail(trailBaseColor)
-
-        if (atmosphere != AtmosphereType.NONE) {
-            DrawCircleGradient(
-                renderPosition,
-                radius.value.toFloat() * 1.5f,
-                atmosphereColor,
-                transparentAtmosphere,
-            )
-        }
-
-        drawSmoothCircle(renderPosition, radius.value.toFloat(), color)
     }
 }
