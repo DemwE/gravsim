@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.github.ajalt.clikt:clikt:5.1.0") // Clikt
     implementation("uk.co.electronstudio.jaylib:jaylib:6.0.+") // Raylib
     testImplementation(kotlin("test"))
 }

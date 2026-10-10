@@ -4,9 +4,6 @@ import spaceObjects.*
 import kotlin.math.ceil
 import kotlin.random.Random
 
-/**
- * High-level celestial system model coordinating bodies and the physics engine.
- */
 class SolarSystem(
     val name: String,
     val seed: Seed,
@@ -22,9 +19,14 @@ class SolarSystem(
     var suggestedTimeScale: Double = 1.0e5
         private set
 
-    fun populate(planets: Int) {
+    fun populate(planets: Int? = null) {
         objects.clear()
         val result = SolarSystemGenerator.generate(name, seed, planets)
+        populate(result)
+    }
+
+    fun populate(result: SystemGenerationResult) {
+        objects.clear()
         objects.addAll(result.objects)
         suggestedTimeScale = result.suggestedTimeScale
         engine.rebuild()

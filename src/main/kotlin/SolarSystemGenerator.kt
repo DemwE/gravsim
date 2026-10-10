@@ -1,5 +1,7 @@
 import bodyTypes.*
 import engine.G
+import engine.MAX_PLANETS
+import engine.MAP_HALF_KM
 import lib.NameGenerator
 import lib.Seed
 import spaceObjects.*
@@ -12,13 +14,19 @@ data class SystemGenerationResult(
     val suggestedTimeScale: Double,
 )
 
-/**
- * Procedural astrophysics generator for stars, binary orbits, and planetary systems.
- */
 object SolarSystemGenerator {
+    private const val PLANET_COUNT_SEED_SALT: Long = 0x51A7E5L
+    private const val MIN_ORBIT_MAP_FRACTION: Double = 0.4
+    private const val MAX_ORBIT_MAP_FRACTION: Double = 0.8
 
-    fun generate(name: String, seed: Seed, planets: Int): SystemGenerationResult {
-        require(planets >= 0) { "Planet count cannot be negative" }
+    fun planetCountFromSeed(seed: Seed): Int =
+        Random(seed.value xor PLANET_COUNT_SEED_SALT).nextInt(1, MAX_PLANETS + 1)
+
+    fun generate(name: String, seed: Seed, planets: Int? = null): SystemGenerationResult {
+        val planetCount = planets ?: planetCountFromSeed(seed)
+        require(planetCount in 0..MAX_PLANETS) {
+            "Planet count must be between 0 and $MAX_PLANETS"
+        }
 
         val objects = mutableListOf<GravityObject>()
         val random = Random(seed.value)
@@ -74,32 +82,35 @@ object SolarSystemGenerator {
             outermostStar + planetGapKm
         }
 
-        var previousPlanetRadius = 0.0
-        var orbitRadius = 0.0
-        var innerOrbitRadius = 0.0
-
-        repeat(planets) { index ->
+        val generatedPlanets = List(planetCount) {
             val type = weightedRandom(CelestialBodyType.entries, random) { it.weight }
             val atmosphere = weightedRandom(type.atmosphere, random) { it.weight }
             val mass = random.nextDouble(type.massRange.min.value, type.massRange.max.value)
             val radius = random.nextDouble(type.radiusRange.min.value, type.radiusRange.max.value)
+            GeneratedPlanet(type, atmosphere, mass, radius)
+        }
 
-            orbitRadius = if (index == 0) {
-                minimumPlanetDistance + radius
-            } else {
-                orbitRadius + previousPlanetRadius + radius + planetGapKm
-            }
-            previousPlanetRadius = radius
-            if (index == 0) innerOrbitRadius = orbitRadius
+        val orbitRadii = generateOrbitRadii(
+            innerRadius = minimumPlanetDistance + (generatedPlanets.firstOrNull()?.radiusKm ?: 0.0),
+            outerRadius = MAP_HALF_KM * random.nextDouble(
+                MIN_ORBIT_MAP_FRACTION,
+                MAX_ORBIT_MAP_FRACTION,
+            ),
+            count = planetCount,
+            random = random,
+        )
+        val innerOrbitRadius = orbitRadii.firstOrNull() ?: 0.0
 
+        generatedPlanets.forEachIndexed { index, generatedPlanet ->
+            val orbitRadius = orbitRadii[index]
             val angle = random.nextDouble(0.0, 2.0 * PI)
             val planetName = NameGenerator.formatPlanetName(name, index, starCount)
             val planet = CelestialBody(
                 name = planetName,
-                type = type,
-                atmosphere = atmosphere,
-                mass = unit(mass, EarthMass).convertTo(Kilogram),
-                radius = unit(radius, Kilometer),
+                type = generatedPlanet.type,
+                atmosphere = generatedPlanet.atmosphere,
+                mass = unit(generatedPlanet.massEarth, EarthMass).convertTo(Kilogram),
+                radius = unit(generatedPlanet.radiusKm, Kilometer),
                 position = Vec2(cos(angle) * orbitRadius, sin(angle) * orbitRadius)
             )
 
@@ -109,7 +120,7 @@ object SolarSystemGenerator {
         }
 
         var suggestedTimeScale = 1.0e5
-        if (planets > 0) {
+        if (planetCount > 0) {
             val innerPeriod = 2.0 * PI * sqrt(
                 innerOrbitRadius * innerOrbitRadius * innerOrbitRadius / (G * totalStarsMass)
             )
@@ -118,6 +129,40 @@ object SolarSystemGenerator {
 
         return SystemGenerationResult(objects, suggestedTimeScale)
     }
+
+    private fun generateOrbitRadii(
+        innerRadius: Double,
+        outerRadius: Double,
+        count: Int,
+        random: Random,
+    ): List<Double> {
+        if (count == 0) return emptyList()
+
+        val safeOuterRadius = maxOf(innerRadius, outerRadius)
+        val innerLog = ln(innerRadius)
+        val outerLog = ln(safeOuterRadius)
+        if (count == 1) {
+            return listOf(exp(random.nextDouble(innerLog, outerLog)))
+        }
+
+        val logStep = (outerLog - innerLog) / (count - 1)
+        val jitterLimit = logStep * 0.2
+        return List(count) { index ->
+            val jitter = if (index == 0 || index == count - 1) {
+                0.0
+            } else {
+                random.nextDouble(-jitterLimit, jitterLimit)
+            }
+            exp(innerLog + logStep * index + jitter)
+        }
+    }
+
+    private data class GeneratedPlanet(
+        val type: CelestialBodyType,
+        val atmosphere: AtmosphereType,
+        val massEarth: Double,
+        val radiusKm: Double,
+    )
 
     private fun <T> weightedRandom(
         items: List<T>,

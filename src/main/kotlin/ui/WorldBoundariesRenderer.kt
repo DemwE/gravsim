@@ -15,6 +15,7 @@ object WorldBoundariesRenderer {
     private val bBottomRight = Vector2()
     private val bBottomLeft = Vector2()
     private val ringCenter = Vector2()
+    private val rangeMarkersAu = floatArrayOf(10f, 25f, 50f, 100f)
 
     fun draw() {
         val halfKm = MAP_HALF_KM.toFloat()
@@ -30,11 +31,11 @@ object WorldBoundariesRenderer {
         DrawLineV(bBottomRight, bBottomLeft, boundaryColor)
         DrawLineV(bBottomLeft, bTopLeft, boundaryColor)
 
-        // Astronomical range markers (10 AU, 25 AU, 50 AU)
+        // Astronomical range markers for planetary systems.
         ringCenter.x(0f).y(0f)
         val au = AU_KM.toFloat()
-        DrawCircleLinesV(ringCenter, 10f * au, Fade(DARKGRAY, 0.2f))
-        DrawCircleLinesV(ringCenter, 25f * au, Fade(DARKGRAY, 0.2f))
-        DrawCircleLinesV(ringCenter, 50f * au, Fade(DARKGRAY, 0.35f))
+        for (radiusAu in rangeMarkersAu) {
+            DrawCircleLinesV(ringCenter, radiusAu * au, Fade(DARKGRAY, 0.2f))
+        }
     }
 }

@@ -12,7 +12,7 @@ import java.time.Instant
 class InputHandler(
     private val cameraController: CameraController,
     private val hud: SimulationHud,
-    private val defaultPlanets: Int,
+    private val defaultPlanets: Int?,
 ) {
     fun handleInput(
         camera: Camera2D,
