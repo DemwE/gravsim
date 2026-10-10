@@ -58,6 +58,11 @@ class PhysicsEngine(
 
     fun recenterOnBarycenter() = buffers.recenterOnBarycenter()
 
+    val lastRecenterX: Double get() = buffers.lastRecenterX
+    val lastRecenterY: Double get() = buffers.lastRecenterY
+
+    fun shiftTrails(offsetX: Double, offsetY: Double) = buffers.shiftTrails(offsetX, offsetY)
+
     fun positionX(index: Int): Double = buffers.posX[index]
 
     fun positionY(index: Int): Double = buffers.posY[index]

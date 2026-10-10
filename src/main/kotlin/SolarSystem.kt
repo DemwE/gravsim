@@ -37,18 +37,28 @@ class SolarSystem(
 
         val steps = ceil(dtSim / MAX_PHYSICS_STEP).toInt().coerceIn(1, MAX_SUBSTEPS)
         val step = dtSim / steps
+        var trailFrameOffsetX = 0.0
+        var trailFrameOffsetY = 0.0
 
         repeat(steps) {
             engine.step(step)
 
             for (i in 0 until engine.count) {
-                objects[i].updateTrail(engine.positionX(i), engine.positionY(i))
+                objects[i].updateTrail(
+                    engine.positionX(i),
+                    engine.positionY(i),
+                    trailFrameOffsetX,
+                    trailFrameOffsetY,
+                )
             }
 
             engine.resolveCollisions()
             engine.recenterOnBarycenter()
+            trailFrameOffsetX += engine.lastRecenterX
+            trailFrameOffsetY += engine.lastRecenterY
         }
 
+        engine.shiftTrails(-trailFrameOffsetX, -trailFrameOffsetY)
         engine.syncToObjects()
     }
 

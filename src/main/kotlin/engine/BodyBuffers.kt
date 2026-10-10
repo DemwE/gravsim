@@ -26,6 +26,10 @@ internal class BodyBuffers(
     var accY = DoubleArray(capacity)
 
     var hasCollided: Boolean = false
+    var lastRecenterX: Double = 0.0
+        private set
+    var lastRecenterY: Double = 0.0
+        private set
 
     fun rebuild() {
         count = bodies.size
@@ -97,16 +101,25 @@ internal class BodyBuffers(
             weightedX += posX[i] * mass[i]
             weightedY += posY[i] * mass[i]
         }
+        lastRecenterX = 0.0
+        lastRecenterY = 0.0
         if (totalMass <= 0.0) return
         val centerX = weightedX / totalMass
         val centerY = weightedY / totalMass
         if (!centerX.isFinite() || !centerY.isFinite()) return
+        lastRecenterX = centerX
+        lastRecenterY = centerY
         for (i in 0 until count) {
             posX[i] -= centerX
             posY[i] -= centerY
-            for (point in bodies[i].trailPoints) {
-                point.x((point.x() - centerX).toFloat())
-                point.y((point.y() - centerY).toFloat())
+        }
+    }
+
+    fun shiftTrails(offsetX: Double, offsetY: Double) {
+        for (body in bodies) {
+            for (point in body.trailPoints) {
+                point.x((point.x() + offsetX).toFloat())
+                point.y((point.y() + offsetY).toFloat())
             }
         }
     }

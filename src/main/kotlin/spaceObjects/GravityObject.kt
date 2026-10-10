@@ -21,21 +21,25 @@ abstract class GravityObject(
 
     open fun updateTrail() = updateTrail(position.x, position.y)
 
-    open fun updateTrail(x: Double, y: Double) {
+    open fun updateTrail(x: Double, y: Double) = updateTrail(x, y, 0.0, 0.0)
+
+    fun updateTrail(x: Double, y: Double, frameOffsetX: Double, frameOffsetY: Double) {
         if (trailPoints.isEmpty()) {
-            trailPoints.add(Vector2().x(x.toFloat()).y(y.toFloat()))
+            trailPoints.add(Vector2().x((x + frameOffsetX).toFloat()).y((y + frameOffsetY).toFloat()))
             return
         }
 
         val last = trailPoints.last()
-        val dx = x - last.x()
-        val dy = y - last.y()
+        val dx = x - (last.x() - frameOffsetX)
+        val dy = y - (last.y() - frameOffsetY)
         val threshold = trailSegmentKm
         if (dx * dx + dy * dy >= threshold * threshold) {
+            val storedX = (x + frameOffsetX).toFloat()
+            val storedY = (y + frameOffsetY).toFloat()
             val pt = if (trailPoints.size >= maxTrailPoints) {
-                trailPoints.removeFirst().apply { x(x.toFloat()); y(y.toFloat()) }
+                trailPoints.removeFirst().apply { x(storedX); y(storedY) }
             } else {
-                Vector2().x(x.toFloat()).y(y.toFloat())
+                Vector2().x(storedX).y(storedY)
             }
             trailPoints.add(pt)
         }
