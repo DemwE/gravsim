@@ -66,7 +66,7 @@ object HudConfig {
     const val SCALE_STEP = 0.1f
     const val RESET_SCALE = 1.0f
     const val MIN_DPI_SCALE = 1.0f
-    const val TOP_PANEL_WIDTH = 520f
+    const val TOP_PANEL_WIDTH = 480f
     const val TOP_PANEL_HEIGHT = 112f
     const val TOP_PAUSE_WIDTH = 42f
     const val TOP_STEP_START_X = 68f

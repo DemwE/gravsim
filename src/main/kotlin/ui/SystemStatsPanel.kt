@@ -1,6 +1,7 @@
 package ui
 
 import com.raylib.Colors.*
+import com.raylib.Raylib.DrawFPS
 import config.HudConfig
 import spaceObjects.*
 import units.*
@@ -24,6 +25,7 @@ class SystemStatsPanel {
         val textX = panelX + (12 * scale).toInt()
         GuiFont.drawText("SYSTEM OVERVIEW", textX, panelY + (8 * scale).toInt(), (11 * scale).toInt(), SKYBLUE)
         GuiFont.drawText(systemName, textX, panelY + (25 * scale).toInt(), (15 * scale).toInt(), RAYWHITE)
+        DrawFPS(panelX + (260 * scale).toInt(), panelY + (16 * scale).toInt())
         HudStyle.drawDivider(textX, panelY + (45 * scale).toInt(), panelWidth - (24 * scale).toInt())
         GuiFont.drawText("Bodies  $starsCount stars  ·  $planetsCount planets", textX, panelY + (52 * scale).toInt(), (12 * scale).toInt(), LIGHTGRAY)
         GuiFont.drawText(String.format(Locale.US, "Mass  %.3f %s", totalMassSm, SolarMass.symbol), textX, panelY + (71 * scale).toInt(), (12 * scale).toInt(), LIGHTGRAY)

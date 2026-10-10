@@ -69,7 +69,6 @@ class TopStatusBar {
         }
 
         val fpsX = x + width - (70 * scale).toInt()
-        DrawFPS(fpsX, y + (8 * scale).toInt())
     }
 
     fun timeWarpStepAt(mousePos: Vector2, scale: Float): Int? {
