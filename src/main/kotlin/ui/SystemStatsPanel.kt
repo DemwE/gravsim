@@ -7,15 +7,12 @@ import units.*
 import java.util.Locale
 
 class SystemStatsPanel {
-    private val panelBg = Color().r(15.toByte()).g(15.toByte()).b(20.toByte()).a(200.toByte())
-
     fun draw(screenWidth: Int, objects: List<GravityObject>, showOverlay: Boolean, systemName: String = "System", scale: Float = 1.0f) {
-        val panelWidth = (320 * scale).toInt()
-        val panelHeight = (135 * scale).toInt()
+        val panelWidth = (340 * scale).toInt()
+        val panelHeight = (150 * scale).toInt()
         val panelX = screenWidth - panelWidth - (15 * scale).toInt()
         val panelY = (10 * scale).toInt()
-        DrawRectangle(panelX, panelY, panelWidth, panelHeight, panelBg)
-        DrawRectangleLines(panelX, panelY, panelWidth, panelHeight, DARKGRAY)
+        HudStyle.drawPanel(panelX, panelY, panelWidth, panelHeight, SKYBLUE)
 
         val starsCount = objects.count { it is Star }
         val planetsCount = objects.count { it is CelestialBody }
@@ -25,14 +22,16 @@ class SystemStatsPanel {
         val systemRadiusKm = objects.maxOfOrNull { it.position.length() } ?: 0.0
 
         val textX = panelX + (12 * scale).toInt()
-        GuiFont.drawText("SYSTEM: $systemName", textX, panelY + (8 * scale).toInt(), (14 * scale).toInt(), SKYBLUE)
-        GuiFont.drawText("Celestial bodies: $starsCount stars, $planetsCount planets", textX, panelY + (28 * scale).toInt(), (13 * scale).toInt(), LIGHTGRAY)
-        GuiFont.drawText(String.format(Locale.US, "Total mass: %.3f %s", totalMassSm, SolarMass.symbol), textX, panelY + (46 * scale).toInt(), (13 * scale).toInt(), LIGHTGRAY)
-        GuiFont.drawText("System radius: ${formatDistance(systemRadiusKm)}", textX, panelY + (64 * scale).toInt(), (13 * scale).toInt(), LIGHTGRAY)
+        GuiFont.drawText("SYSTEM OVERVIEW", textX, panelY + (8 * scale).toInt(), (11 * scale).toInt(), SKYBLUE)
+        GuiFont.drawText(systemName, textX, panelY + (25 * scale).toInt(), (15 * scale).toInt(), RAYWHITE)
+        HudStyle.drawDivider(textX, panelY + (45 * scale).toInt(), panelWidth - (24 * scale).toInt())
+        GuiFont.drawText("Bodies  $starsCount stars  ·  $planetsCount planets", textX, panelY + (52 * scale).toInt(), (12 * scale).toInt(), LIGHTGRAY)
+        GuiFont.drawText(String.format(Locale.US, "Mass  %.3f %s", totalMassSm, SolarMass.symbol), textX, panelY + (71 * scale).toInt(), (12 * scale).toInt(), LIGHTGRAY)
+        GuiFont.drawText("Extent  ${formatDistance(systemRadiusKm)}", textX, panelY + (90 * scale).toInt(), (12 * scale).toInt(), LIGHTGRAY)
         if (fastestObj != null) {
-            GuiFont.drawText("Fastest body: ${fastestObj.name} (${formatVelocity(fastestObj.velocity.length())})", textX, panelY + (82 * scale).toInt(), (13 * scale).toInt(), LIGHTGRAY)
+            GuiFont.drawText("Fastest  ${fastestObj.name} · ${formatVelocity(fastestObj.velocity.length())}", textX, panelY + (109 * scale).toInt(), (12 * scale).toInt(), LIGHTGRAY)
         }
         val overlayStatus = if (showOverlay) "ON" else "OFF"
-        GuiFont.drawText("[TAB] Vectors & labels: $overlayStatus", textX, panelY + (104 * scale).toInt(), (12 * scale).toInt(), if (showOverlay) LIME else GRAY)
+        GuiFont.drawText("TAB  Vectors & labels  $overlayStatus", textX, panelY + (130 * scale).toInt(), (11 * scale).toInt(), if (showOverlay) LIME else GRAY)
     }
 }

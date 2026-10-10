@@ -4,7 +4,6 @@ import com.raylib.Colors.*
 import com.raylib.Raylib.*
 
 class TopStatusBar {
-    private val topBarBg = Color().r(15.toByte()).g(15.toByte()).b(20.toByte()).a(200.toByte())
     private val panelWidth = 520f
     private val panelHeight = 112f
     private val pauseWidth = 42f
@@ -17,21 +16,17 @@ class TopStatusBar {
         val x = (10 * scale).toInt()
         val y = (10 * scale).toInt()
 
-        DrawRectangle(x, y, width, height, topBarBg)
-        DrawRectangleLines(x, y, width, height, DARKGRAY)
+        HudStyle.drawPanel(x, y, width, height, SKYBLUE)
 
         val timeScaleFormatted = formatTimeScale(timeScale)
         val simTimeFormatted = formatSimulationTime(simulatedTime)
 
         val textX = x + (12 * scale).toInt()
-        GuiFont.drawText("Simulation Speed: $timeScaleFormatted", textX, y + (8 * scale).toInt(), (16 * scale).toInt(), RAYWHITE)
-        GuiFont.drawText("Simulation Time: $simTimeFormatted", textX, y + (28 * scale).toInt(), (16 * scale).toInt(), GOLD)
-
-        if (paused) {
-            GuiFont.drawText("[PAUSED - Space to resume]", textX, y + (50 * scale).toInt(), (15 * scale).toInt(), RED)
-        } else {
-            GuiFont.drawText("Simulation active", textX, y + (50 * scale).toInt(), (14 * scale).toInt(), GREEN)
-        }
+        GuiFont.drawText("TIME CONTROL", textX, y + (8 * scale).toInt(), (11 * scale).toInt(), SKYBLUE)
+        GuiFont.drawText(if (paused) "PAUSED" else "RUNNING", textX + (405 * scale).toInt(), y + (8 * scale).toInt(), (11 * scale).toInt(), if (paused) RED else GREEN)
+        GuiFont.drawText(timeScaleFormatted, textX, y + (26 * scale).toInt(), (16 * scale).toInt(), RAYWHITE)
+        GuiFont.drawText("ELAPSED  $simTimeFormatted", textX, y + (49 * scale).toInt(), (13 * scale).toInt(), GOLD)
+        HudStyle.drawDivider(x + (12 * scale).toInt(), y + (65 * scale).toInt(), ((panelWidth - 24f) * scale).toInt())
 
         val selectedStep = TimeWarpSteps.indexOf(timeScale)
         val pauseX = x + (12 * scale).toInt()

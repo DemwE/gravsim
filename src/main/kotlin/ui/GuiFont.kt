@@ -24,7 +24,8 @@ object GuiFont {
                     }
                 }
                 tempFontFile = tempFile
-                val loaded = LoadFontEx(tempFile.absolutePath, 48, null as IntArray?, 0)
+                val glyphs = ((32..126) + 0x00B7).toIntArray()
+                val loaded = LoadFontEx(tempFile.absolutePath, 48, glyphs, glyphs.size)
                 if (loaded.texture().id() != 0) {
                     SetTextureFilter(loaded.texture(), TEXTURE_FILTER_BILINEAR)
                     customFont = loaded
