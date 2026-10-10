@@ -12,7 +12,7 @@ class ControlsHelpBar {
         DrawRectangle(0, bottomBarY, screenWidth, bottomBarHeight, bottomBarBg)
         DrawLine(0, bottomBarY, screenWidth, bottomBarY, DARKGRAY)
 
-        val helpText = "+/-: Speed | Ctrl + +/-: UI size | 0/O: Reset | C: Reset cam | Space: Pause | R: New sys | Tab: Overlay | LMB: Select | F: Follow | ESC: Deselect"
+        val helpText = "+/-: Time warp step | Ctrl + +/-: UI size | 0/O: Reset warp | C: Reset cam | Space: Pause | R: New sys | Tab: Overlay | LMB: Select/warp/pause | F: Follow | ESC: Deselect"
         GuiFont.drawText(helpText, (15 * scale).toInt(), bottomBarY + (6 * scale).toInt(), (13 * scale).toInt(), RAYWHITE)
     }
 }

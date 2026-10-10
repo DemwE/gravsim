@@ -27,7 +27,7 @@ object SimulationRunner {
         val inputHandler = InputHandler(cameraController, hud, planetCount)
 
         var system = preset.create(Seed(seedValue), planetCount)
-        var timeScale = system.suggestedTimeScale
+        var timeScale = ui.TimeWarpSteps.scaleAt(0)
         var paused = false
         var simulatedTime = 0.0
 

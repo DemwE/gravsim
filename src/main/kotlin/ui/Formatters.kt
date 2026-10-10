@@ -3,37 +3,16 @@ package ui
 import units.*
 import java.util.Locale
 
-private fun formatDayTime(remDaySec: Double): Triple<Long, Long, Long> {
-    val hours = unit(remDaySec, Second).convertTo(Hour).value.toLong()
-    val remHourSec = remDaySec % Hour.factorToSI
-    val mins = unit(remHourSec, Second).convertTo(Minute).value.toLong()
-    val secs = (remHourSec % Minute.factorToSI).toLong()
-    return Triple(hours, mins, secs)
-}
-
 fun formatSimulationTime(totalSeconds: Double): String {
-    if (totalSeconds < 0.0 || !totalSeconds.isFinite()) return "00:00:00"
-
-    val timeQty = unit(totalSeconds, Second)
-    if (totalSeconds >= Year.factorToSI) {
-        val years = timeQty.convertTo(Year).value.toLong()
-        val remSec = totalSeconds % Year.factorToSI
-        val days = unit(remSec, Second).convertTo(Day).value.toLong()
-        val (hours, mins, secs) = formatDayTime(remSec % Day.factorToSI)
-        return String.format(Locale.US, "%d y %d d %02d:%02d:%02d", years, days, hours, mins, secs)
+    if (!totalSeconds.isFinite() || totalSeconds < 0.0) return "0.00 d"
+    val days = totalSeconds / Day.factorToSI
+    if (days >= Year.factorToSI / Day.factorToSI) {
+        val daysPerYear = Year.factorToSI / Day.factorToSI
+        val years = (days / daysPerYear).toLong()
+        val remainingDays = (days - years * daysPerYear).toLong()
+        return String.format(Locale.US, "%,d y %,d d", years, remainingDays)
     }
-
-    if (totalSeconds >= Day.factorToSI) {
-        val days = timeQty.convertTo(Day).value.toLong()
-        val (hours, mins, secs) = formatDayTime(totalSeconds % Day.factorToSI)
-        return String.format(Locale.US, "%d d %02d:%02d:%02d", days, hours, mins, secs)
-    }
-
-    val totalSecLong = totalSeconds.toLong()
-    val hours = totalSecLong / 3600
-    val mins = (totalSecLong % 3600) / 60
-    val secs = totalSecLong % 60
-    return String.format(Locale.US, "%02d:%02d:%02d", hours, mins, secs)
+    return String.format(Locale.US, "%,.2f d", days)
 }
 
 fun formatTimeScale(scale: Double): String {

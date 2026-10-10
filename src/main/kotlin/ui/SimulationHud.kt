@@ -56,4 +56,17 @@ class SimulationHud(
         objectInspectorPanel.draw(screenHeight, selectedObject, followedObject, effectiveScale)
         controlsHelpBar.draw(screenWidth, screenHeight, effectiveScale)
     }
+
+    fun timeWarpStepAt(mousePos: Vector2): Int? {
+        return topStatusBar.timeWarpStepAt(mousePos, effectiveScale())
+    }
+
+    fun pauseButtonContains(mousePos: Vector2): Boolean =
+        topStatusBar.pauseButtonContains(mousePos, effectiveScale())
+
+    private fun effectiveScale(): Float {
+        val logicalWidth = GetScreenWidth()
+        val dpiScale = if (logicalWidth > 0) (GetRenderWidth().toFloat() / logicalWidth).coerceAtLeast(1.0f) else 1.0f
+        return scale * dpiScale
+    }
 }

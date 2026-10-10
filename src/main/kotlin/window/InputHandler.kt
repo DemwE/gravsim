@@ -4,6 +4,7 @@ import SolarSystem
 import com.raylib.Raylib.*
 import lib.Seed
 import ui.SimulationHud
+import ui.TimeWarpSteps
 import java.time.Instant
 
 /**
@@ -32,10 +33,14 @@ class InputHandler(
             if (IsKeyPressed(KEY_ZERO) || IsKeyPressed(KEY_KP_0) || IsKeyPressed(KEY_O)) hud.scaleReset()
         } else {
             val currentScale = timeScaleProvider()
-            if (IsKeyPressed(KEY_EQUAL) || IsKeyPressed(KEY_KP_ADD)) timeScaleSetter(currentScale * 2.0)
-            if (IsKeyPressed(KEY_MINUS) || IsKeyPressed(KEY_KP_SUBTRACT)) timeScaleSetter(currentScale * 0.5)
+            if (IsKeyPressed(KEY_EQUAL) || IsKeyPressed(KEY_KP_ADD)) {
+                timeScaleSetter(TimeWarpSteps.step(currentScale, 1))
+            }
+            if (IsKeyPressed(KEY_MINUS) || IsKeyPressed(KEY_KP_SUBTRACT)) {
+                timeScaleSetter(TimeWarpSteps.step(currentScale, -1))
+            }
             if (IsKeyPressed(KEY_ZERO) || IsKeyPressed(KEY_KP_0) || IsKeyPressed(KEY_O)) {
-                timeScaleSetter(systemProvider().suggestedTimeScale)
+                timeScaleSetter(TimeWarpSteps.scaleAt(0))
             }
         }
 
@@ -63,6 +68,15 @@ class InputHandler(
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             val mousePos = GetMousePosition()
+            if (hud.pauseButtonContains(mousePos)) {
+                pausedSetter(!pausedProvider())
+                return
+            }
+            val stepIndex = hud.timeWarpStepAt(mousePos)
+            if (stepIndex != null) {
+                timeScaleSetter(TimeWarpSteps.scaleAt(stepIndex))
+                return
+            }
             val clickedObj = hud.selectObjectAt(mousePos, camera, systemProvider().objects)
             if (clickedObj != null) {
                 hud.selectedObject = clickedObj
@@ -75,7 +89,7 @@ class InputHandler(
             val fresh = SolarSystem(Seed(Instant.now().toEpochMilli()))
             fresh.populate(planets = defaultPlanets)
             systemSetter(fresh)
-            timeScaleSetter(fresh.suggestedTimeScale)
+            timeScaleSetter(TimeWarpSteps.scaleAt(0))
             simulatedTimeSetter(0.0)
             hud.selectedObject = null
             cameraController.reset(camera)
