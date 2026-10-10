@@ -6,7 +6,7 @@ import kotlin.math.sqrt
 fun setCircularOrbit(
     satellite: GravityObject,
     centers: List<GravityObject>,
-    clockwise: Boolean = true
+    clockwise: Boolean = false
 ) {
     require(centers.isNotEmpty()) { "Orbit requires at least one central body" }
 
@@ -44,8 +44,8 @@ fun setBinaryStarOrbit(star1: GravityObject, star2: GravityObject) {
     val totalMass = m1 + m2
 
     val vRel = sqrt(G * totalMass / r)
-    val nx = -dy / r
-    val ny = dx / r
+    val nx = dy / r
+    val ny = -dx / r
 
     star1.velocity = Vec2(-nx * vRel * (m2 / totalMass), -ny * vRel * (m2 / totalMass))
     star2.velocity = Vec2(nx * vRel * (m1 / totalMass), ny * vRel * (m1 / totalMass))
