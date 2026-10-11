@@ -3,16 +3,15 @@ package window
 import SolarSystem
 import com.raylib.Raylib.*
 import lib.Seed
+import presets.PresetFactory
 import ui.SimulationHud
 import ui.TimeWarpSteps
 import java.time.Instant
 
-/**
- * Handles keyboard shortcuts and mouse interaction for the simulation.
- */
 class InputHandler(
     private val cameraController: CameraController,
     private val hud: SimulationHud,
+    private val presetFactory: PresetFactory,
     private val defaultPlanets: Int?,
 ) {
     fun handleInput(
@@ -86,8 +85,7 @@ class InputHandler(
         if (IsKeyPressed(KEY_R)) {
             val old = systemProvider()
             old.close()
-            val fresh = SolarSystem(Seed(Instant.now().toEpochMilli()))
-            fresh.populate(planets = defaultPlanets)
+            val fresh = presetFactory.create(Seed(Instant.now().toEpochMilli()), defaultPlanets)
             systemSetter(fresh)
             timeScaleSetter(TimeWarpSteps.scaleAt(0))
             simulatedTimeSetter(0.0)

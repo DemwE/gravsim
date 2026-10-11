@@ -1,0 +1,56 @@
+// use `generate-types` command to see possible object types
+
+{
+  "name": "Binary Star System",
+  "stars": [
+    {
+      "name": "Aster A",
+      "type": "G",
+      "massSolar": 1.0,
+      "radiusKm": 696340,
+      "temperatureK": 5772,
+      "positionAu": [-10, 0]
+    },
+    {
+      "name": "Aster B",
+      "type": "K",
+      "massSolar": 0.7,
+      "radiusKm": 520000,
+      "temperatureK": 4600,
+      "positionAu": [10, 0]
+    }
+  ],
+  "planets": [
+    {
+      "name": "Aster A-I",
+      "type": "ROCKY_BODY",
+      "atmosphere": "NITROGEN",
+      "massEarth": 1.2,
+      "radiusKm": 6800,
+      "orbitAu": 1.0,
+      "orbitAround": "Aster A",
+      "angleDeg": 20
+    },
+    {
+      "name": "Aster B-I",
+      "type": "ICY_BODY",
+      "atmosphere": "METHANE",
+      "massEarth": 0.08,
+      "radiusKm": 2800,
+      "orbitAu": 0.6,
+      "orbitAround": "Aster B",
+      "angleDeg": 190,
+      "clockwise": true
+    },
+    {
+      "name": "Aster AB-I",
+      "type": "CLASS_III_GAS_GIANT",
+      "atmosphere": "HELIUM",
+      "massEarth": 90,
+      "radiusKm": 65000,
+      "orbitAu": 55,
+      "orbitAround": "barycenter",
+      "angleDeg": 270
+    }
+  ]
+}

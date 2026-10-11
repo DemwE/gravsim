@@ -7,8 +7,8 @@ import lib.Seed
 import kotlin.math.PI
 import kotlin.math.sqrt
 
-fun interface PresetFactory {
-    fun create(seed: Seed, planets: Int?): SolarSystem
+interface PresetFactory {
+    fun create(seed: Seed, planets: Int? = null): SolarSystem
 }
 
 internal fun orbitalPeriodSeconds(radiusKm: Double, centralMassKg: Double): Double =

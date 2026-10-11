@@ -3,7 +3,7 @@ import com.raylib.Raylib.*
 import config.CameraConfig
 import config.SimulationConfig
 import lib.Seed
-import presets.SystemPreset
+import presets.PresetFactory
 import ui.GuiFont
 import ui.SimulationHud
 import ui.WorldBoundariesRenderer
@@ -13,7 +13,7 @@ import window.InputHandler
 import window.initializeWindow
 
 object SimulationRunner {
-    fun run(preset: SystemPreset, seedValue: Long, planetCount: Int?) {
+    fun run(preset: PresetFactory, seedValue: Long, planetCount: Int?) {
         SetTargetFPS(SimulationConfig.TARGET_FPS)
         initializeWindow()
 
@@ -23,7 +23,7 @@ object SimulationRunner {
             .zoom(CameraConfig.INITIAL_ZOOM)
         val cameraController = CameraController()
         val hud = SimulationHud()
-        val inputHandler = InputHandler(cameraController, hud, planetCount)
+        val inputHandler = InputHandler(cameraController, hud, preset, planetCount)
 
         var system = preset.create(Seed(seedValue), planetCount)
         var timeScale = ui.TimeWarpSteps.scaleAt(0)

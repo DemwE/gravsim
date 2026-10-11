@@ -1,0 +1,47 @@
+// use `generate-types` command to see possible object types
+
+{
+  "name": "Single Star System",
+  "stars": [
+    {
+      "name": "Sol",
+      "type": "G",
+      "massSolar": 1.0,
+      "radiusKm": 696340,
+      "temperatureK": 5772,
+      "positionAu": [0, 0]
+    }
+  ],
+  "planets": [
+    {
+      "name": "Cinder",
+      "type": "ROCKY_BODY",
+      "atmosphere": "CARBON_DIOXIDE",
+      "massEarth": 0.8,
+      "radiusKm": 5600,
+      "orbitAu": 0.55,
+      "orbitAround": "Sol",
+      "angleDeg": 25
+    },
+    {
+      "name": "Verdant",
+      "type": "EARTH_LIKE_WORLD",
+      "atmosphere": "NITROGEN",
+      "massEarth": 1.0,
+      "radiusKm": 6371,
+      "orbitAu": 1.0,
+      "orbitAround": "Sol",
+      "angleDeg": 140
+    },
+    {
+      "name": "Aurelia",
+      "type": "CLASS_III_GAS_GIANT",
+      "atmosphere": "HELIUM",
+      "massEarth": 180,
+      "radiusKm": 72000,
+      "orbitAu": 5.2,
+      "orbitAround": "Sol",
+      "angleDeg": 235
+    }
+  ]
+}

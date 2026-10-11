@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     implementation("com.github.ajalt.clikt:clikt:5.1.0") // Clikt
+    implementation("com.google.code.gson:gson:2.11.0") // Gson
     implementation("uk.co.electronstudio.jaylib:jaylib:6.0.+") // Raylib
     testImplementation(kotlin("test"))
 }
