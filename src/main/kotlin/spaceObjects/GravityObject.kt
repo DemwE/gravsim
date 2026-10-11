@@ -20,10 +20,6 @@ abstract class GravityObject(
 
     abstract fun draw()
 
-    open fun updateTrail() = updateTrail(position.x, position.y)
-
-    open fun updateTrail(x: Double, y: Double) = updateTrail(x, y, 0.0, 0.0)
-
     fun updateTrail(x: Double, y: Double, frameOffsetX: Double, frameOffsetY: Double) {
         if (trailPoints.isEmpty()) {
             trailPoints.add(Vector2().x((x + frameOffsetX).toFloat()).y((y + frameOffsetY).toFloat()))
@@ -61,8 +57,7 @@ abstract class GravityObject(
         }
         val strip = trailStrip!!
 
-        for (i in 0 until trailPoints.size) {
-            val p = trailPoints[i]
+        for ((i, p) in trailPoints.withIndex()) {
             strip.position(i.toLong()).x(p.x()).y(p.y())
         }
         strip.position((total - 1).toLong()).x(position.x.toFloat()).y(position.y.toFloat())

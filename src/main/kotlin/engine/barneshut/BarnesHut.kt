@@ -3,7 +3,7 @@ package engine.barneshut
 import engine.QuadtreePool
 
 class BarnesHut internal constructor(
-    private val pool: QuadtreePool = QuadtreePool()
+    pool: QuadtreePool = QuadtreePool()
 ) {
     private val tree = BarnesHutTree(pool)
     private val calculator = BarnesHutForceCalculator(pool)

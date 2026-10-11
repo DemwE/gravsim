@@ -20,11 +20,9 @@ import spaceObjects.setBinaryStarOrbit
 import spaceObjects.setCircularOrbit
 import units.*
 import java.io.File
-import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-/** Loads a user-defined one-star or binary-star system from JSON. */
 class JsonSystemPreset private constructor(
     val systemName: String,
     private val stars: List<StarDefinition>,
@@ -173,8 +171,8 @@ class JsonSystemPreset private constructor(
                     .forEach { planet ->
                         require(planet.orbitAu >= minimumBarycenterOrbitAu) {
                             "Planet '${planet.name}' has an unstable barycenter orbit: " +
-                                "orbitAu must be at least ${minimumBarycenterOrbitAu} AU " +
-                                "(2.5 times the binary separation of ${binarySeparationAu} AU)"
+                                "orbitAu must be at least $minimumBarycenterOrbitAu AU " +
+                                "(2.5 times the binary separation of $binarySeparationAu AU)"
                         }
                     }
             }

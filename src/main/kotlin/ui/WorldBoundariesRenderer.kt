@@ -20,16 +20,14 @@ object WorldBoundariesRenderer {
         bBottomRight.x(halfKm).y(halfKm)
         bBottomLeft.x(-halfKm).y(halfKm)
 
-        drawGrid(halfKm)
+        drawGrid()
 
-        // A quiet base outline keeps the world edge visible at every zoom level.
         val boundaryColor = Fade(SKYBLUE, WorldRenderConfig.BOUNDARY_ALPHA)
         DrawLineV(bTopLeft, bTopRight, boundaryColor)
         DrawLineV(bTopRight, bBottomRight, boundaryColor)
         DrawLineV(bBottomRight, bBottomLeft, boundaryColor)
         DrawLineV(bBottomLeft, bTopLeft, boundaryColor)
 
-        // Short corner brackets give the simulation area a clean sci-fi frame.
         val bracket = halfKm * WorldRenderConfig.CORNER_BRACKET_FRACTION
         val bracketColor = Fade(SKYBLUE, WorldRenderConfig.CORNER_BRACKET_ALPHA)
         drawCorner(-halfKm, -halfKm, 1f, 1f, bracket, bracketColor)
@@ -37,7 +35,6 @@ object WorldBoundariesRenderer {
         drawCorner(halfKm, halfKm, -1f, -1f, bracket, bracketColor)
         drawCorner(-halfKm, halfKm, 1f, -1f, bracket, bracketColor)
 
-        // Small navigation ticks mark the quarter points along the boundary.
         val tick = halfKm * WorldRenderConfig.BOUNDARY_TICK_FRACTION
         for (fraction in floatArrayOf(-0.5f, 0f, 0.5f)) {
             val offset = halfKm * fraction
@@ -53,7 +50,8 @@ object WorldBoundariesRenderer {
         DrawLineV(point(x, y), point(x, y + yDirection * length), color)
     }
 
-    private fun drawGrid(halfKm: Float) {
+    private fun drawGrid() {
+        val halfKm = MAP_HALF_KM.toFloat()
         val step = WorldRenderConfig.GRID_STEP_AU * AU_KM.toFloat()
         val divisions = (halfKm / step).toInt()
         val minorColor = Fade(SKYBLUE, WorldRenderConfig.GRID_MINOR_ALPHA)
