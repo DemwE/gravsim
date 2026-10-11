@@ -20,55 +20,85 @@ class TopStatusBar {
         HudStyle.drawPanel(x, y, width, height, SKYBLUE)
 
         val timeScaleFormatted = formatTimeScale(timeScale)
+            .substringBefore(" (x")
+            .replace("1s = ", "1 s = ")
         val simTimeFormatted = formatSimulationTime(simulatedTime)
 
         val textX = x + (12 * scale).toInt()
         GuiFont.drawText("TIME CONTROL", textX, y + (8 * scale).toInt(), (11 * scale).toInt(), SKYBLUE)
         GuiFont.drawText(if (paused) "PAUSED" else "RUNNING", textX + (405 * scale).toInt(), y + (8 * scale).toInt(), (11 * scale).toInt(), if (paused) RED else GREEN)
-        GuiFont.drawText(timeScaleFormatted, textX, y + (26 * scale).toInt(), (16 * scale).toInt(), RAYWHITE)
-        GuiFont.drawText("ELAPSED  $simTimeFormatted", textX, y + (49 * scale).toInt(), (13 * scale).toInt(), GOLD)
-        HudStyle.drawDivider(x + (12 * scale).toInt(), y + (65 * scale).toInt(), ((panelWidth - 24f) * scale).toInt())
+        val timeScaleSize = 16f * scale
+        val elapsedText = "ELAPSED  $simTimeFormatted"
+        val elapsedSize = 13f * scale
+        GuiFont.drawText(timeScaleFormatted, textX.toFloat(), y + 29f * scale, timeScaleSize, RAYWHITE)
+        val elapsedWidth = GuiFont.measureTextWidth(elapsedText, elapsedSize)
+        val elapsedRight = x + width - (12 * scale).toInt()
+        GuiFont.drawText(elapsedText, elapsedRight - elapsedWidth, y + 31f * scale, elapsedSize, GOLD)
+        HudStyle.drawDivider(x + (12 * scale).toInt(), y + (53 * scale).toInt(), ((panelWidth - 24f) * scale).toInt())
 
         val selectedStep = TimeWarpSteps.indexOf(timeScale)
         val pauseX = x + (12 * scale).toInt()
-        val pauseY = y + (69 * scale).toInt()
+        val pauseY = y + (57 * scale).toInt()
         val pauseColor = if (paused) GREEN else RED
-        DrawRectangle(pauseX, pauseY, (pauseWidth * scale).toInt(), (30 * scale).toInt(), Fade(pauseColor, 0.18f))
-        DrawRectangleLines(pauseX, pauseY, (pauseWidth * scale).toInt(), (30 * scale).toInt(), pauseColor)
+        DrawRectangle(pauseX, pauseY, (pauseWidth * scale).toInt(), (34 * scale).toInt(), Fade(pauseColor, 0.12f))
+        DrawRectangleLines(pauseX, pauseY, (pauseWidth * scale).toInt(), (34 * scale).toInt(), Fade(pauseColor, 0.8f))
         if (paused) {
             DrawTriangle(
-                Vector2().x(pauseX + 14 * scale).y(pauseY + 6 * scale),
-                Vector2().x(pauseX + 14 * scale).y(pauseY + 24 * scale),
-                Vector2().x(pauseX + 29 * scale).y(pauseY + 15 * scale),
+                Vector2().x(pauseX + 14 * scale).y(pauseY + 8 * scale),
+                Vector2().x(pauseX + 14 * scale).y(pauseY + 26 * scale),
+                Vector2().x(pauseX + 29 * scale).y(pauseY + 17 * scale),
                 pauseColor,
             )
         } else {
             val barWidth = 4 * scale
             val barHeight = 15 * scale
-            DrawRectangle((pauseX + 13 * scale).toInt(), (pauseY + 7 * scale).toInt(), barWidth.toInt(), barHeight.toInt(), pauseColor)
-            DrawRectangle((pauseX + 24 * scale).toInt(), (pauseY + 7 * scale).toInt(), barWidth.toInt(), barHeight.toInt(), pauseColor)
+            DrawRectangle((pauseX + 13 * scale).toInt(), (pauseY + 9 * scale).toInt(), barWidth.toInt(), barHeight.toInt(), pauseColor)
+            DrawRectangle((pauseX + 24 * scale).toInt(), (pauseY + 9 * scale).toInt(), barWidth.toInt(), barHeight.toInt(), pauseColor)
         }
 
+        val buttonWidth = 52f * scale
+        val buttonHeight = 34f * scale
         val triangleWidth = 16f * scale
-        val triangleHeight = 12f * scale
+        val triangleHeight = 13f * scale
         val firstCenterX = x + stepStartX * scale + stepWidth * scale / 2f
-        val centerY = y + 80f * scale
+        val buttonY = y + 57f * scale
         for (index in 0 until TimeWarpSteps.count) {
             val centerX = firstCenterX + index * stepWidth * scale
-            val color = if (index <= selectedStep) LIME else DARKGRAY
-            DrawTriangle(
-                Vector2().x(centerX).y(centerY - triangleHeight / 2f),
-                Vector2().x(centerX - triangleWidth / 2f).y(centerY + triangleHeight / 2f),
-                Vector2().x(centerX + triangleWidth / 2f).y(centerY + triangleHeight / 2f),
-                color,
+            val selected = index == selectedStep
+            val reached = index <= selectedStep
+            val color = if (reached) LIME else SKYBLUE
+            val left = (centerX - buttonWidth / 2f).toInt()
+            val top = buttonY.toInt()
+            DrawRectangle(
+                left,
+                top,
+                buttonWidth.toInt(),
+                buttonHeight.toInt(),
+                when {
+                    selected -> Fade(LIME, 0.2f)
+                    reached -> Fade(LIME, 0.09f)
+                    else -> Fade(SKYBLUE, 0.035f)
+                },
             )
-            val label = TimeWarpSteps.labelAt(index)
-            val labelSize = 9f * scale
-            val labelWidth = GuiFont.measureTextWidth(label, labelSize)
-            GuiFont.drawText(label, centerX - labelWidth / 2f, y + 91f * scale, labelSize, if (index == selectedStep) RAYWHITE else GRAY)
+            DrawRectangleLines(
+                left,
+                top,
+                buttonWidth.toInt(),
+                buttonHeight.toInt(),
+                when {
+                    selected -> Fade(LIME, 0.9f)
+                    reached -> Fade(LIME, 0.5f)
+                    else -> Fade(SKYBLUE, 0.18f)
+                },
+            )
+            val triangleCenterY = buttonY + buttonHeight / 2f
+            DrawTriangle(
+                Vector2().x(centerX - triangleWidth / 2f).y(triangleCenterY - triangleHeight / 2f),
+                Vector2().x(centerX - triangleWidth / 2f).y(triangleCenterY + triangleHeight / 2f),
+                Vector2().x(centerX + triangleWidth / 2f).y(triangleCenterY),
+                if (reached) color else Fade(color, 0.55f),
+            )
         }
-
-        val fpsX = x + width - (70 * scale).toInt()
     }
 
     fun timeWarpStepAt(mousePos: Vector2, scale: Float): Int? {
@@ -77,12 +107,11 @@ class TopStatusBar {
         val y = mousePos.y() * factor
         val panelX = 10f * scale
         val panelY = 10f * scale
-        val centerY = panelY + 80f * scale
-        if (y !in (centerY - 17f * scale)..(panelY + 108f * scale)) return null
+        if (y !in (panelY + 57f * scale)..(panelY + 91f * scale)) return null
         val firstCenterX = panelX + (stepStartX + stepWidth / 2f) * scale
         return (0 until TimeWarpSteps.count).firstOrNull { index ->
             val centerX = firstCenterX + index * stepWidth * scale
-            x in (centerX - stepWidth * scale / 2f)..(centerX + stepWidth * scale / 2f)
+            x in (centerX - 26f * scale)..(centerX + 26f * scale)
         }
     }
 
@@ -91,7 +120,7 @@ class TopStatusBar {
         val x = mousePos.x() * factor
         val y = mousePos.y() * factor
         val left = 22f * scale
-        val top = 79f * scale
-        return x in left..(left + pauseWidth * scale) && y in top..(top + 30f * scale)
+        val top = 67f * scale
+        return x in left..(left + pauseWidth * scale) && y in top..(top + 34f * scale)
     }
 }
