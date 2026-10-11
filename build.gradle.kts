@@ -38,6 +38,7 @@ tasks.jar {
     dependsOn(configurations.runtimeClasspath)
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 
+    exclude("**/*.obj", "**/*.lib", "**/*.exp", "**/*.a")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     doLast {
