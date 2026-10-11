@@ -2,9 +2,7 @@ package bodyTypes
 
 import com.raylib.Raylib.Color
 import lib.Range
-import units.EarthMass
-import units.Kilometer
-import units.unit
+import units.*
 
 enum class CelestialBodyType(
     val displayName: String,

@@ -2,9 +2,7 @@ package spaceObjects
 
 import com.raylib.Raylib.*
 import config.TrailConfig
-import units.Kilogram
-import units.Kilometer
-import units.Quantity
+import units.*
 
 abstract class GravityObject(
     open val name: String,

@@ -3,8 +3,7 @@ package ui
 import com.raylib.Colors.*
 import com.raylib.Raylib.*
 import config.WorldRenderConfig
-import engine.AU_KM
-import engine.MAP_HALF_KM
+import engine.*
 
 object WorldBoundariesRenderer {
 

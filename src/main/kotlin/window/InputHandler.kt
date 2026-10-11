@@ -4,8 +4,7 @@ import SolarSystem
 import com.raylib.Raylib.*
 import lib.Seed
 import presets.PresetFactory
-import ui.SimulationHud
-import ui.TimeWarpSteps
+import ui.*
 import java.time.Instant
 
 class InputHandler(

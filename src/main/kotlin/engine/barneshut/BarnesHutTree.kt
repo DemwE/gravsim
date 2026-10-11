@@ -1,8 +1,6 @@
 package engine.barneshut
 
-import engine.BARNES_HUT_MAX_DEPTH
-import engine.MAP_HALF_KM
-import engine.QuadtreePool
+import engine.*
 
 internal class BarnesHutTree(
     val pool: QuadtreePool

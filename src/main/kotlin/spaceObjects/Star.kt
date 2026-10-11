@@ -3,10 +3,7 @@ package spaceObjects
 import bodyTypes.StarType
 import com.raylib.Raylib.*
 import config.TrailConfig
-import units.Kelvin
-import units.Kilogram
-import units.Kilometer
-import units.Quantity
+import units.*
 
 class Star(
     name: String,

@@ -1,19 +1,13 @@
 package cli
 
 import SimulationRunner
-import presets.SystemPreset
-import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.UsageError
-import com.github.ajalt.clikt.core.subcommands
-import com.github.ajalt.clikt.parameters.options.check
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.types.choice
-import com.github.ajalt.clikt.parameters.types.int
-import com.github.ajalt.clikt.parameters.types.long
+import presets.*
+import com.github.ajalt.clikt.core.*
+import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.types.*
 import engine.MAX_PLANETS
 import lib.Seed
 import SolarSystemGenerator
-import presets.JsonSystemPreset
 import java.io.File
 
 class SimulationCommand : CliktCommand(name = "gravsim") {

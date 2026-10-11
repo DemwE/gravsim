@@ -4,14 +4,10 @@ import com.raylib.Colors.*
 import com.raylib.Raylib.*
 import config.WorldRenderConfig
 import engine.AU_KM
-import spaceObjects.CelestialBody
-import spaceObjects.GravityObject
-import spaceObjects.Star
+import spaceObjects.*
 import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
-/** Draws round shapes after world projection, avoiding float precision loss at astronomical coordinates. */
 object ScreenWorldRenderer {
     fun draw(camera: Camera2D, objects: List<GravityObject>) {
         val origin = GetWorldToScreen2D(Vector2().x(0f).y(0f), camera)

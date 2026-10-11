@@ -1,8 +1,7 @@
 package spaceObjects
 
 import engine.G
-import kotlin.math.PI
-import kotlin.math.sqrt
+import kotlin.math.*
 
 fun setCircularOrbit(
     satellite: GravityObject,

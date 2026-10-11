@@ -4,9 +4,6 @@ import com.raylib.Raylib.*
 import config.CameraConfig
 import spaceObjects.GravityObject
 
-/**
- * World-space object picker converting screen cursor coordinates to celestial bodies.
- */
 internal object ObjectPicker {
 
     fun pickObject(

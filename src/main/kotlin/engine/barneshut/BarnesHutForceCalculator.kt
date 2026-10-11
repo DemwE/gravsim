@@ -1,7 +1,6 @@
 package engine.barneshut
 
-import engine.G
-import engine.QuadtreePool
+import engine.*
 import kotlin.math.sqrt
 
 internal class BarnesHutForceCalculator(

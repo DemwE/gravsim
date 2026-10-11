@@ -1,16 +1,10 @@
 import com.raylib.Colors.BLACK
 import com.raylib.Raylib.*
-import config.CameraConfig
-import config.SimulationConfig
+import config.*
 import lib.Seed
 import presets.PresetFactory
-import ui.GuiFont
-import ui.SimulationHud
-import ui.WorldBoundariesRenderer
-import ui.ScreenWorldRenderer
-import window.CameraController
-import window.InputHandler
-import window.initializeWindow
+import ui.*
+import window.*
 
 object SimulationRunner {
     fun run(preset: PresetFactory, seedValue: Long, planetCount: Int?) {
@@ -26,7 +20,7 @@ object SimulationRunner {
         val inputHandler = InputHandler(cameraController, hud, preset, planetCount)
 
         var system = preset.create(Seed(seedValue), planetCount)
-        var timeScale = ui.TimeWarpSteps.scaleAt(0)
+        var timeScale = TimeWarpSteps.scaleAt(0)
         var paused = false
         var simulatedTime = 0.0
 

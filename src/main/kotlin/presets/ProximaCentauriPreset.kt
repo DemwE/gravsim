@@ -2,15 +2,10 @@ package presets
 
 import SolarSystem
 import SystemGenerationResult
-import bodyTypes.AtmosphereType
-import bodyTypes.CelestialBodyType
-import bodyTypes.StarType
+import bodyTypes.*
 import engine.AU_KM
 import lib.Seed
-import spaceObjects.CelestialBody
-import spaceObjects.Star
-import spaceObjects.Vec2
-import spaceObjects.setCircularOrbit
+import spaceObjects.*
 import units.*
 
 internal object ProximaCentauriPreset : PresetFactory {

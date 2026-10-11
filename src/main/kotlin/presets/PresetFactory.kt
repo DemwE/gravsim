@@ -4,8 +4,7 @@ import SolarSystem
 import config.GenerationConfig
 import engine.G
 import lib.Seed
-import kotlin.math.PI
-import kotlin.math.sqrt
+import kotlin.math.*
 
 interface PresetFactory {
     fun create(seed: Seed, planets: Int? = null): SolarSystem

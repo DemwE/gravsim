@@ -2,10 +2,7 @@ package bodyTypes
 
 import com.raylib.Raylib.Color
 import lib.Range
-import units.Kelvin
-import units.Kilometer
-import units.SolarMass
-import units.unit
+import units.*
 
 enum class StarType(
     val displayName: String,

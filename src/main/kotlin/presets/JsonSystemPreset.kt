@@ -2,26 +2,15 @@ package presets
 
 import SolarSystem
 import SystemGenerationResult
-import bodyTypes.AtmosphereType
-import bodyTypes.CelestialBodyType
-import bodyTypes.StarType
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import bodyTypes.*
+import com.google.gson.*
 import config.GenerationConfig
-import engine.AU_KM
-import engine.MAX_PLANETS
+import engine.*
 import lib.Seed
-import spaceObjects.CelestialBody
-import spaceObjects.Star
-import spaceObjects.Vec2
-import spaceObjects.setBinaryStarOrbit
-import spaceObjects.setCircularOrbit
+import spaceObjects.*
 import units.*
 import java.io.File
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 class JsonSystemPreset private constructor(
     val systemName: String,

@@ -1,12 +1,9 @@
 package spaceObjects
 
-import bodyTypes.AtmosphereType
-import bodyTypes.CelestialBodyType
+import bodyTypes.*
 import com.raylib.Raylib.*
 import config.TrailConfig
-import units.Kilogram
-import units.Kilometer
-import units.Quantity
+import units.*
 
 class CelestialBody(
     name: String,

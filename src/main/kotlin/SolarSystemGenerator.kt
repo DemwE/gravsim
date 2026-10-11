@@ -1,11 +1,8 @@
 import bodyTypes.*
 import config.GenerationConfig
-import engine.MAX_PLANETS
-import engine.MAP_HALF_KM
-import lib.NameGenerator
-import lib.Seed
-import presets.orbitalPeriodSeconds
-import presets.suggestedTimeScaleForOrbitalPeriod
+import engine.*
+import lib.*
+import presets.*
 import spaceObjects.*
 import units.*
 import kotlin.math.*

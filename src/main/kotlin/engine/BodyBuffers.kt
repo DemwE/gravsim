@@ -1,10 +1,7 @@
 package engine
 
-import spaceObjects.GravityObject
-import spaceObjects.Vec2
-import units.Kilogram
-import units.Kilometer
-import units.Quantity
+import spaceObjects.*
+import units.*
 
 internal class BodyBuffers(
     val bodies: MutableList<GravityObject>,

@@ -1,8 +1,6 @@
 package cli
 
-import bodyTypes.AtmosphereType
-import bodyTypes.CelestialBodyType
-import bodyTypes.StarType
+import bodyTypes.*
 import com.github.ajalt.clikt.core.CliktCommand
 
 class GenerateTypesCommand : CliktCommand(name = "generate-types") {
