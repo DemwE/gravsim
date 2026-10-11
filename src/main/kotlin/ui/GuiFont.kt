@@ -1,8 +1,8 @@
 package ui
 
 import com.raylib.Raylib.*
+import lib.ResourceLoader
 import java.io.File
-import java.nio.file.Files
 
 object GuiFont {
     private var customFont: Font? = null
@@ -14,22 +14,13 @@ object GuiFont {
         initialized = true
 
         try {
-            val stream = GuiFont::class.java.getResourceAsStream("/fonts/Anta-Regular.ttf")
-            if (stream != null) {
-                val tempFile = Files.createTempFile("gravsim_font_", ".ttf").toFile()
-                tempFile.deleteOnExit()
-                stream.use { input ->
-                    tempFile.outputStream().use { output ->
-                        input.copyTo(output)
-                    }
-                }
-                tempFontFile = tempFile
-                val glyphs = ((32..126) + 0x00B7).toIntArray()
-                val loaded = LoadFontEx(tempFile.absolutePath, 48, glyphs, glyphs.size)
-                if (loaded.texture().id() != 0) {
-                    SetTextureFilter(loaded.texture(), TEXTURE_FILTER_BILINEAR)
-                    customFont = loaded
-                }
+            val tempFile = ResourceLoader.extractToTempFile("fonts/Anta-Regular.ttf", "gravsim_font_", ".ttf")
+            tempFontFile = tempFile
+            val glyphs = ((32..126) + 0x00B7).toIntArray()
+            val loaded = LoadFontEx(tempFile.absolutePath, 48, glyphs, glyphs.size)
+            if (loaded.texture().id() != 0) {
+                SetTextureFilter(loaded.texture(), TEXTURE_FILTER_BILINEAR)
+                customFont = loaded
             }
         } catch (_: Exception) {
             // Keep default font if loading fails
